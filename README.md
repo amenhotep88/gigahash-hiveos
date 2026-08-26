@@ -1,4 +1,4 @@
-# GigaHash ZK v1.6 — HiveOS Custom Miner
+# GigaHash ZK v1.6 — HiveOS Custom Miner 1.6.1
 
 Unofficial HiveOS wrapper for the official `gigahash.cloud` NOCK ZK CUDA miner.
 The proprietary miner binary is **not bundled**. On first start, the wrapper downloads it directly from the official GigaHash CDN and verifies its SHA-256 checksum.
@@ -13,7 +13,8 @@ The proprietary miner binary is **not bundled**. On first start, the wrapper dow
 - Pass: blank
 - Extra Config Arguments: optional native GigaHash CLI args, e.g. `--devices 0,1,2,3,4,5`
 
-The HiveOS rig name is passed automatically as `--worker-name`.
+The HiveOS rig name is passed automatically as `--worker-name`. Use `%WAL%` only;
+the wrapper also strips a matching `.worker-name` suffix defensively when HiveOS adds one.
 
 ## Stats
 
@@ -23,6 +24,7 @@ HiveOS displays GigaHash proof rate using its generic hash-rate fields:
 
 Per-GPU proof rate, temperature and fan are parsed from the GigaHash console table.
 The local GigaHash `Accepted` counter is deliberately not exported because it can stay at zero even while the pool account page reports valid accepted shares.
+Miner output is mirrored to both the `miner` console and the log used by HiveOS stats.
 
 ## Official miner pinned by this package
 

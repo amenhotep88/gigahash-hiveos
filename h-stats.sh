@@ -62,7 +62,7 @@ if [[ -s "$LOG" ]]; then
 
   # The miner's local Accepted counter can remain zero while pool-side shares
   # are already VALID, so don't publish misleading ar[] counters to HiveOS.
-  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"1.6"}' \
+  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"1.6.1"}' \
     "$hs_json" "$temp_json" "$fan_json" "$uptime")"
 fi
 

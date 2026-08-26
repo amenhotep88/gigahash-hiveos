@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -u
 
-CUSTOM_DIR="/hive/miners/custom/gigahash"
+CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash}"
 . "$CUSTOM_DIR/h-manifest.conf"
+. "$CUSTOM_DIR/h-common.sh"
 
 BIN="$CUSTOM_DIR/gigahash-zk-12.9"
 DOWNLOAD_URL="https://cdn.gigahash.cloud/releases/1.6/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9"
@@ -65,9 +66,9 @@ if [[ -n "${GH_EXTRA:-}" ]]; then
   read -r -a extra_args <<< "$GH_EXTRA"
 fi
 
-exec "$BIN" \
+run_with_log "${CUSTOM_LOG_BASENAME}.log" "$BIN" \
   --server "$GH_SERVER" \
   --payout-address "$GH_PAYOUT" \
   --worker-name "$GH_WORKER" \
-  "${extra_args[@]}" \
-  >> "${CUSTOM_LOG_BASENAME}.log" 2>&1
+  "${extra_args[@]}"
+exit $?
