@@ -165,8 +165,15 @@ test_srb_download_uses_rig_accessible_cdn_parts() {
     fail 'SRBMiner still depends on blocked GitHub release assets'
 }
 
+test_split_package_version_is_1_0_1() {
+  assert_contains "$(cat "$SPLIT_DIR/h-manifest.conf")" 'CUSTOM_VERSION=1.0.1' 'split manifest version'
+  assert_contains "$(cat "$REPO_DIR/build-split.sh")" "VERSION='1.0.1'" 'split archive version'
+  assert_contains "$(cat "$SPLIT_DIR/h-stats.sh")" 'split-1.0.1/gh-' 'split stats version'
+}
+
 test_config_generates_fixed_redrig_split
 test_run_starts_both_miners_on_disjoint_gpus_and_stops_peer
 test_stats_exports_only_nock_rate
 test_srb_download_uses_rig_accessible_cdn_parts
+test_split_package_version_is_1_0_1
 echo 'PASS: split wrapper behavior'
