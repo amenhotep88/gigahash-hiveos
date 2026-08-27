@@ -30,5 +30,7 @@ verify_sha256() {
 
 find_srb_binary() {
   local base="$1"
-  find "$base" -type f -name 'SRBMiner-MULTI' -perm /111 2>/dev/null | head -n 1
+  find "$base" -type f -perm /111 \
+    \( -name 'SRBMiner-MULTI' -o -name 'srbminer_custom_bin' \) \
+    2>/dev/null | head -n 1
 }

@@ -22,6 +22,8 @@ is reused to avoid another GitHub release download.
 - Extra config arguments: blank
 
 The PRL wallet and Kryptex pool are pinned in this personal split package.
-HiveOS reports the NOCK rate because NOCK and PearlHash use incompatible hash
-units. PRL output remains visible in the miner console, SRBMiner API port
-`21550`, and the Kryptex dashboard.
+HiveOS reports NOCK as the primary algorithm on GPUs `0,1,2,3` and PearlHash
+as the secondary algorithm on GPUs `4,5,6,7`. The secondary stats use the
+SRBMiner API and PCI bus mapping, so the dashboard keeps the incompatible hash
+units separate. PRL output also remains available in the miner console,
+SRBMiner API port `21550`, and the Kryptex dashboard.

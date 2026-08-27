@@ -53,7 +53,7 @@ test_split_package_defaults_to_ru1_and_v1_8() {
   cp "$SPLIT_DIR/h-common.sh" "$custom/h-common.sh"
   cat > "$custom/h-manifest.conf" <<EOF
 CUSTOM_NAME=gigahash-prl-split
-CUSTOM_VERSION=1.0.3
+CUSTOM_VERSION=1.0.4
 CUSTOM_CONFIG_FILENAME=$config
 CUSTOM_LOG_BASENAME=$tmp/gigahash-prl-split
 EOF
@@ -71,9 +71,9 @@ EOF
   assert_contains "$run_script" 'bd0c9ca5b626fceb1e7c71cb852073a1b4c30cdc6477925947e589d27b19139c' 'split binary SHA256'
   assert_contains "$run_script" 'cat "$part" >> "$tmp_archive"' 'split archive assembly'
   [[ "$run_script" != *'cdn.gigahash.cloud'* ]] || fail 'split package still depends on blocked GigaHash CDN'
-  assert_contains "$(cat "$SPLIT_DIR/h-manifest.conf")" 'CUSTOM_VERSION=1.0.3' 'split package version'
-  assert_contains "$(cat "$REPO_DIR/build-split.sh")" "VERSION='1.0.3'" 'split archive version'
-  assert_contains "$(cat "$SPLIT_DIR/h-stats.sh")" 'split-1.0.3/gh-' 'split stats version'
+  assert_contains "$(cat "$SPLIT_DIR/h-manifest.conf")" 'CUSTOM_VERSION=1.0.4' 'split package version'
+  assert_contains "$(cat "$REPO_DIR/build-split.sh")" "VERSION='1.0.4'" 'split archive version'
+  assert_contains "$(cat "$SPLIT_DIR/h-stats.sh")" 'split-1.0.4/gh-' 'split stats version'
   rm -rf "$tmp"
 }
 
