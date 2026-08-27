@@ -6,7 +6,9 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash-prl-split}"
 . "$CUSTOM_DIR/h-common.sh"
 
 GH_BIN="$CUSTOM_DIR/gigahash-zk-12.9"
-GH_URL='https://cdn.gigahash.cloud/releases/1.8/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9'
+GH_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/gigahash-zk-1.8.tar.gz.part-'
+GH_PART_LAST=75
+GH_ARCHIVE_SHA256='ab22159be68dbc9c3dd5a472541f4526bbc41dd5516e746f18a4538282d0e369'
 GH_SHA256='bd0c9ca5b626fceb1e7c71cb852073a1b4c30cdc6477925947e589d27b19139c'
 SRB_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/srbminer_custom-3.6.0.tar.gz.part-'
 SRB_PART_LAST=26
@@ -20,17 +22,35 @@ mkdir -p "$(dirname "$CUSTOM_LOG_BASENAME")" "$CUSTOM_DIR/vendor"
 
 install_gh() {
   verify_sha256 "$GH_BIN" "$GH_SHA256" && return 0
-  local tmp="${GH_BIN}.download.$$"
-  echo '[split] Downloading official GigaHash ZK v1.8...'
-  rm -f "$tmp"
-  download_file "$GH_URL" "$tmp" || return 1
-  if ! verify_sha256 "$tmp" "$GH_SHA256"; then
-    echo '[split] ERROR: GigaHash SHA256 mismatch' >&2
-    rm -f "$tmp"
+  local tmp_dir tmp_archive candidate part part_index part_suffix
+  tmp_dir="$(mktemp -d "$CUSTOM_DIR/.gigahash-1.8.XXXXXX")" || return 1
+  tmp_archive="$tmp_dir/gigahash-zk-1.8.tar.gz"
+  echo '[split] Downloading verified GigaHash ZK v1.8 mirror...'
+  for part_index in $(seq 0 "$GH_PART_LAST"); do
+    printf -v part_suffix '%03d' "$part_index"
+    part="$tmp_dir/part-$part_suffix"
+    if ! download_file "${GH_PART_BASE}${part_suffix}" "$part"; then
+      rm -rf "$tmp_dir"
+      return 1
+    fi
+    cat "$part" >> "$tmp_archive"
+    rm -f "$part"
+  done
+  if ! verify_sha256 "$tmp_archive" "$GH_ARCHIVE_SHA256"; then
+    echo '[split] ERROR: GigaHash archive SHA256 mismatch' >&2
+    rm -rf "$tmp_dir"
     return 1
   fi
-  mv -f "$tmp" "$GH_BIN"
+  tar -xzf "$tmp_archive" -C "$tmp_dir" gigahash-zk/gigahash-zk || { rm -rf "$tmp_dir"; return 1; }
+  candidate="$tmp_dir/gigahash-zk/gigahash-zk"
+  if ! verify_sha256 "$candidate" "$GH_SHA256"; then
+    echo '[split] ERROR: GigaHash binary SHA256 mismatch' >&2
+    rm -rf "$tmp_dir"
+    return 1
+  fi
+  mv -f "$candidate" "$GH_BIN"
   chmod 755 "$GH_BIN"
+  rm -rf "$tmp_dir"
 }
 
 install_srb() {

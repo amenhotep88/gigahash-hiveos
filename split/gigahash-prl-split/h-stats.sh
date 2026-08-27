@@ -16,7 +16,7 @@ if [[ -s "$NATIVE_STATS" ]] && command -v jq >/dev/null 2>&1 && jq -e . "$NATIVE
   fan_json="$(jq -c '[.gpus[]? | (.fan_percent // 0)]' "$NATIVE_STATS")"
   uptime="$(jq -r '.uptime_seconds // 0' "$NATIVE_STATS")"
   miner_ver="$(jq -r '.miner_version // "1.7"' "$NATIVE_STATS")"
-  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"split-1.0.2/gh-%s","algo":"nock-zk"}' \
+  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"split-1.0.3/gh-%s","algo":"nock-zk"}' \
     "$hs_json" "$temp_json" "$fan_json" "$uptime" "$miner_ver")"
 fi
 

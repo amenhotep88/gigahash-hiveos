@@ -1,12 +1,12 @@
-# GigaHash ZK v1.8 — HiveOS Custom Miner 1.8.0
+# GigaHash ZK v1.8 — HiveOS Custom Miner 1.8.1
 
 Unofficial HiveOS wrapper for the official `gigahash.cloud` NOCK ZK CUDA miner.
-The proprietary miner binary is **not bundled**. On first start, the wrapper downloads it directly from the official GigaHash CDN and verifies its SHA-256 checksum.
+The proprietary miner binary is **not bundled**. On first start, the wrapper reconstructs the official HiveOS archive from a jsDelivr mirror and verifies both the archive and binary SHA-256 checksums.
 
 ## Flight Sheet
 
 - Miner: **Custom**
-- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-1.8.tar.gz`
+- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-1.8.1.tar.gz`
 - Hash algorithm: leave blank / `----`
 - Wallet and worker template: **`%WAL%`**
 - Pool URL: `ru1.gigahash.cloud:9100`
@@ -27,7 +27,7 @@ from one wrapper:
 
 Installation URL:
 
-`https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-prl-split-1.0.2.tar.gz`
+`https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-prl-split-1.0.3.tar.gz`
 
 Use the existing NOCK wallet, `%WAL%` template, and pool URL
 `ru1.gigahash.cloud:9100`. Leave Extra Config Arguments blank. Full details are in

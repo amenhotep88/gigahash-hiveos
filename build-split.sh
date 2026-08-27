@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGE_NAME='gigahash-prl-split'
-VERSION='1.0.2'
+VERSION='1.0.3'
 SOURCE_DIR="$REPO_DIR/split/$PACKAGE_NAME"
 OUTPUT="$REPO_DIR/${PACKAGE_NAME}-${VERSION}.tar.gz"
 

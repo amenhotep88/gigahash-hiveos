@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGE_NAME='gigahash'
-VERSION='1.8'
+VERSION='1.8.1'
 OUTPUT="$REPO_DIR/${PACKAGE_NAME}-${VERSION}.tar.gz"
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT

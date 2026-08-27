@@ -6,8 +6,10 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash}"
 . "$CUSTOM_DIR/h-common.sh"
 
 BIN="$CUSTOM_DIR/gigahash-zk-12.9"
-DOWNLOAD_URL="https://cdn.gigahash.cloud/releases/1.8/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9"
-EXPECTED_SHA256="bd0c9ca5b626fceb1e7c71cb852073a1b4c30cdc6477925947e589d27b19139c"
+GH_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/gigahash-zk-1.8.tar.gz.part-'
+GH_PART_LAST=75
+GH_ARCHIVE_SHA256='ab22159be68dbc9c3dd5a472541f4526bbc41dd5516e746f18a4538282d0e369'
+EXPECTED_SHA256='bd0c9ca5b626fceb1e7c71cb852073a1b4c30cdc6477925947e589d27b19139c'
 STATS_FILE="${CUSTOM_LOG_BASENAME}.json"
 
 mkdir -p "$(dirname "$CUSTOM_LOG_BASENAME")"
@@ -20,30 +22,43 @@ verify_binary() {
 }
 
 download_binary() {
-  local tmp="${BIN}.download.$$"
-  rm -f "$tmp"
-  echo "[gigahash-hiveos] Downloading official GigaHash ZK v1.8..."
-  if command -v curl >/dev/null 2>&1; then
-    curl -fL --retry 3 --connect-timeout 15 -o "$tmp" "$DOWNLOAD_URL" || return 1
-  elif command -v wget >/dev/null 2>&1; then
-    wget -O "$tmp" "$DOWNLOAD_URL" || return 1
-  else
-    echo "[gigahash-hiveos] ERROR: curl/wget not found" >&2
+  local tmp_dir tmp_archive part part_index part_suffix candidate got
+  tmp_dir="$(mktemp -d "$CUSTOM_DIR/.gigahash-1.8.XXXXXX")" || return 1
+  tmp_archive="$tmp_dir/gigahash-zk-1.8.tar.gz"
+  echo "[gigahash-hiveos] Downloading verified GigaHash ZK v1.8 mirror..."
+  for part_index in $(seq 0 "$GH_PART_LAST"); do
+    printf -v part_suffix '%03d' "$part_index"
+    part="$tmp_dir/part-$part_suffix"
+    if command -v curl >/dev/null 2>&1; then
+      curl -fL --retry 3 --connect-timeout 15 -o "$part" "${GH_PART_BASE}${part_suffix}" || { rm -rf "$tmp_dir"; return 1; }
+    elif command -v wget >/dev/null 2>&1; then
+      wget -O "$part" "${GH_PART_BASE}${part_suffix}" || { rm -rf "$tmp_dir"; return 1; }
+    else
+      echo "[gigahash-hiveos] ERROR: curl/wget not found" >&2
+      rm -rf "$tmp_dir"
+      return 1
+    fi
+    cat "$part" >> "$tmp_archive"
+    rm -f "$part"
+  done
+
+  got="$(sha256sum "$tmp_archive" | awk '{print $1}')"
+  if [[ "$got" != "$GH_ARCHIVE_SHA256" ]]; then
+    echo "[gigahash-hiveos] ERROR: archive SHA256 mismatch" >&2
+    rm -rf "$tmp_dir"
     return 1
   fi
-
-  local got
-  got="$(sha256sum "$tmp" | awk '{print $1}')"
+  tar -xzf "$tmp_archive" -C "$tmp_dir" gigahash-zk/gigahash-zk || { rm -rf "$tmp_dir"; return 1; }
+  candidate="$tmp_dir/gigahash-zk/gigahash-zk"
+  got="$(sha256sum "$candidate" | awk '{print $1}')"
   if [[ "$got" != "$EXPECTED_SHA256" ]]; then
-    echo "[gigahash-hiveos] ERROR: SHA256 mismatch" >&2
-    echo "[gigahash-hiveos] expected: $EXPECTED_SHA256" >&2
-    echo "[gigahash-hiveos] got:      $got" >&2
-    rm -f "$tmp"
+    echo "[gigahash-hiveos] ERROR: binary SHA256 mismatch" >&2
+    rm -rf "$tmp_dir"
     return 1
   fi
-
-  mv -f "$tmp" "$BIN"
+  mv -f "$candidate" "$BIN"
   chmod 755 "$BIN"
+  rm -rf "$tmp_dir"
 }
 
 if ! verify_binary; then
