@@ -1,0 +1,27 @@
+name: Publish GigaHash HiveOS v1.7.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/publish-v1.7.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create release and upload HiveOS package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.7.0 gigahash-1.7.tar.gz \
+            --target d91402bf2038a319dd7fb4caa2bb9b2bdb6a099f \
+            --title "GigaHash ZK v1.7.0 for HiveOS" \
+            --notes "HiveOS custom-miner wrapper for GigaHash ZK v1.7. The official miner binary is downloaded at first start and verified against SHA-256 b1f8c91172dc5f84fc7648ae9119b525efbc4d6953e267549bad4a4d17617ea1."
