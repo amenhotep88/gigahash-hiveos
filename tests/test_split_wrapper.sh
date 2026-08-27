@@ -153,7 +153,18 @@ EOF
   rm -rf "$tmp"
 }
 
+test_srb_download_uses_rig_accessible_cdn() {
+  local run_script
+  run_script="$(cat "$SPLIT_DIR/h-run.sh")"
+  assert_contains "$run_script" \
+    "SRB_URL='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/srbminer_custom-3.6.0.tar.gz'" \
+    'SRBMiner CDN URL'
+  [[ "$run_script" != *'github.com/doktor83/SRBMiner-Multi/releases/download/'* ]] || \
+    fail 'SRBMiner still depends on blocked GitHub release assets'
+}
+
 test_config_generates_fixed_redrig_split
 test_run_starts_both_miners_on_disjoint_gpus_and_stops_peer
 test_stats_exports_only_nock_rate
+test_srb_download_uses_rig_accessible_cdn
 echo 'PASS: split wrapper behavior'

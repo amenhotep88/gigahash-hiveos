@@ -8,7 +8,7 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash-prl-split}"
 GH_BIN="$CUSTOM_DIR/gigahash-zk-12.9"
 GH_URL='https://cdn.gigahash.cloud/releases/1.7/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9?v=1.7-verified'
 GH_SHA256='b1f8c91172dc5f84fc7648ae9119b525efbc4d6953e267549bad4a4d17617ea1'
-SRB_URL='https://github.com/doktor83/SRBMiner-Multi/releases/download/3.6.0/srbminer_custom-3.6.0.tar.gz'
+SRB_URL='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/srbminer_custom-3.6.0.tar.gz'
 SRB_SHA256='9908635af2a12f925d92f6d15e79f2f8df4b57070e478bd1c7e30d282ee10fb3'
 SRB_VENDOR_DIR="$CUSTOM_DIR/vendor/srbminer-3.6.0"
 GH_STATS="${CUSTOM_LOG_BASENAME}-nock.json"
