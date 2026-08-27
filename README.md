@@ -27,7 +27,7 @@ from one wrapper:
 
 Installation URL:
 
-`https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-prl-split-1.0.3.tar.gz`
+`https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-prl-split-1.0.4.tar.gz`
 
 Use the existing NOCK wallet, `%WAL%` template, and pool URL
 `ru1.gigahash.cloud:9100`. Leave Extra Config Arguments blank. Full details are in
