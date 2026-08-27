@@ -4,11 +4,21 @@
 CUSTOM_DIR="/hive/miners/custom/gigahash"
 [[ -f "$CUSTOM_DIR/h-manifest.conf" ]] && . "$CUSTOM_DIR/h-manifest.conf"
 LOG="${CUSTOM_LOG_BASENAME:-/var/log/miner/gigahash/gigahash}.log"
+NATIVE_STATS="${CUSTOM_LOG_BASENAME:-/var/log/miner/gigahash/gigahash}.json"
 
 khs=0
 stats='null'
 
-if [[ -s "$LOG" ]]; then
+if [[ -s "$NATIVE_STATS" ]] && command -v jq >/dev/null 2>&1 && jq -e . "$NATIVE_STATS" >/dev/null 2>&1; then
+  khs="$(jq -r '(.hashrate // 0) / 1000' "$NATIVE_STATS")"
+  hs_json="$(jq -c '[.gpus[]? | ((.hashrate // 0) / 1000)]' "$NATIVE_STATS")"
+  temp_json="$(jq -c '[.gpus[]? | (.temperature_celsius // 0)]' "$NATIVE_STATS")"
+  fan_json="$(jq -c '[.gpus[]? | (.fan_percent // 0)]' "$NATIVE_STATS")"
+  uptime="$(jq -r '.uptime_seconds // 0' "$NATIVE_STATS")"
+  miner_ver="$(jq -r '.miner_version // "1.7"' "$NATIVE_STATS")"
+  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"%s"}' \
+    "$hs_json" "$temp_json" "$fan_json" "$uptime" "$miner_ver")"
+elif [[ -s "$LOG" ]]; then
   last_total="$(grep -E 'Total[[:space:]]+[0-9.]+[[:space:]]+(p/s|kp/s|Mp/s)' "$LOG" | tail -n 1)"
   if [[ "$last_total" =~ Total[[:space:]]+([0-9.]+)[[:space:]]+(p/s|kp/s|Mp/s) ]]; then
     total_value="${BASH_REMATCH[1]}"
@@ -62,7 +72,7 @@ if [[ -s "$LOG" ]]; then
 
   # The miner's local Accepted counter can remain zero while pool-side shares
   # are already VALID, so don't publish misleading ar[] counters to HiveOS.
-  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"1.6.1"}' \
+  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"1.7"}' \
     "$hs_json" "$temp_json" "$fan_json" "$uptime")"
 fi
 
