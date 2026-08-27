@@ -5,9 +5,9 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash-prl-split}"
 . "$CUSTOM_DIR/h-manifest.conf"
 . "$CUSTOM_DIR/h-common.sh"
 
-server="${CUSTOM_URL:-84.32.220.164:9100}"
+server="${CUSTOM_URL:-ru1.gigahash.cloud:9100}"
 server="$(printf '%s' "$server" | tr -d '\r\n\t ')"
-[[ -n "$server" ]] || server='84.32.220.164:9100'
+[[ -n "$server" ]] || server='ru1.gigahash.cloud:9100'
 
 worker="${WORKER_NAME:-$(hostname)}"
 payout="$(normalize_payout "${CUSTOM_TEMPLATE:-}" "$worker")"

@@ -2,7 +2,7 @@
 
 HiveOS custom miner package that launches two GPU miners from one Custom Miner:
 
-- GPU `0,1,2,3`: GigaHash NOCK ZK v1.7, `--instances 2`;
+- GPU `0,1,2,3`: GigaHash NOCK ZK v1.8, `--instances 2`;
 - GPU `4,5,6,7`: SRBMiner-MULTI v3.6.0, `pearlhash`, Kryptex PRL pool.
 
 The official binaries are downloaded at runtime and verified with SHA-256. If
@@ -17,7 +17,7 @@ is reused to avoid another GitHub release download.
 - Miner: Custom
 - Miner name: `gigahash-prl-split`
 - Wallet and worker template: `%WAL%`
-- Pool URL: `84.32.220.164:9100`
+- Pool URL: `ru1.gigahash.cloud:9100`
 - Pass: blank
 - Extra config arguments: blank
 

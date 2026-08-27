@@ -6,8 +6,8 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash-prl-split}"
 . "$CUSTOM_DIR/h-common.sh"
 
 GH_BIN="$CUSTOM_DIR/gigahash-zk-12.9"
-GH_URL='https://cdn.gigahash.cloud/releases/1.7/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9?v=1.7-verified'
-GH_SHA256='b1f8c91172dc5f84fc7648ae9119b525efbc4d6953e267549bad4a4d17617ea1'
+GH_URL='https://cdn.gigahash.cloud/releases/1.8/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9'
+GH_SHA256='bd0c9ca5b626fceb1e7c71cb852073a1b4c30cdc6477925947e589d27b19139c'
 SRB_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/srbminer_custom-3.6.0.tar.gz.part-'
 SRB_PART_LAST=26
 SRB_SHA256='9908635af2a12f925d92f6d15e79f2f8df4b57070e478bd1c7e30d282ee10fb3'
@@ -21,7 +21,7 @@ mkdir -p "$(dirname "$CUSTOM_LOG_BASENAME")" "$CUSTOM_DIR/vendor"
 install_gh() {
   verify_sha256 "$GH_BIN" "$GH_SHA256" && return 0
   local tmp="${GH_BIN}.download.$$"
-  echo '[split] Downloading official GigaHash ZK v1.7...'
+  echo '[split] Downloading official GigaHash ZK v1.8...'
   rm -f "$tmp"
   download_file "$GH_URL" "$tmp" || return 1
   if ! verify_sha256 "$tmp" "$GH_SHA256"; then

@@ -1,4 +1,4 @@
-# GigaHash ZK v1.7 — HiveOS Custom Miner 1.7.0
+# GigaHash ZK v1.8 — HiveOS Custom Miner 1.8.0
 
 Unofficial HiveOS wrapper for the official `gigahash.cloud` NOCK ZK CUDA miner.
 The proprietary miner binary is **not bundled**. On first start, the wrapper downloads it directly from the official GigaHash CDN and verifies its SHA-256 checksum.
@@ -6,10 +6,10 @@ The proprietary miner binary is **not bundled**. On first start, the wrapper dow
 ## Flight Sheet
 
 - Miner: **Custom**
-- Installation URL: `https://raw.githubusercontent.com/amenhotep88/gigahash-hiveos/main/gigahash-1.7.tar.gz`
+- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-1.8.tar.gz`
 - Hash algorithm: leave blank / `----`
 - Wallet and worker template: **`%WAL%`**
-- Pool URL: e.g. `84.32.220.164:9100` or `server.gigahash.cloud:9100`
+- Pool URL: `ru1.gigahash.cloud:9100`
 - Pass: blank
 - Extra Config Arguments: optional native GigaHash CLI args, e.g. `--devices 0,1,2,3,4,5`
 
@@ -22,15 +22,15 @@ The repository also publishes a dedicated `redrig` package that works around
 HiveOS's one-Custom-Miner-per-Flight-Sheet limitation by launching both miners
 from one wrapper:
 
-- GPU `0,1,2,3`: GigaHash NOCK ZK v1.7 with `--instances 2`;
+- GPU `0,1,2,3`: GigaHash NOCK ZK v1.8 with `--instances 2`;
 - GPU `4,5,6,7`: SRBMiner-MULTI v3.6.0 `pearlhash` on Kryptex.
 
 Installation URL:
 
-`https://raw.githubusercontent.com/amenhotep88/gigahash-hiveos/main/gigahash-prl-split-1.0.0.tar.gz`
+`https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-prl-split-1.0.2.tar.gz`
 
 Use the existing NOCK wallet, `%WAL%` template, and pool URL
-`84.32.220.164:9100`. Leave Extra Config Arguments blank. Full details are in
+`ru1.gigahash.cloud:9100`. Leave Extra Config Arguments blank. Full details are in
 [`split/gigahash-prl-split/README.md`](split/gigahash-prl-split/README.md).
 
 ## Stats
@@ -45,22 +45,22 @@ Miner output is mirrored to both the `miner` console and the log used by HiveOS 
 
 ## Official miner pinned by this package
 
-- GigaHash ZK: v1.7
+- GigaHash ZK: v1.8
 - CUDA build: 12.9
-- URL: `https://cdn.gigahash.cloud/releases/1.7/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
-- SHA256: `b1f8c91172dc5f84fc7648ae9119b525efbc4d6953e267549bad4a4d17617ea1`
+- URL: `https://cdn.gigahash.cloud/releases/1.8/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
+- SHA256: `bd0c9ca5b626fceb1e7c71cb852073a1b4c30cdc6477925947e589d27b19139c`
 
-## Miner changes observed in v1.7
+## Miner changes observed in v1.8
 
 - native atomic JSON statistics through `--stats-file PATH`;
 - separate `--proxy HOST[:PORT]` option with default port `9200`;
 - `--server HOST[:PORT]` now defaults to public-pool port `9100`;
 - updated official ZK binary and checksum.
 
-No separate upstream v1.7 changelog was published at the time this package was built. The list above is based on the official v1.6/v1.7 command-line interfaces and release files.
+The v1.8 binary, official HiveOS package, command-line interface, and checksum
+were verified directly from the GigaHash CDN before this wrapper was built.
 
 ## Notes
 
-The default GigaHash hostname may resolve to multiple pool IPs. If your ISP reaches only some of them reliably, put a working `HOST:PORT` directly into HiveOS Pool URL.
-
-The v1.7 CDN briefly served a stale binary for the plain release URL. The wrapper uses a versioned query string to bypass that stale edge-cache entry and still verifies the official SHA-256 before execution.
+The default endpoint is the developer-provided Russian server
+`ru1.gigahash.cloud:9100`, manually verified from `redrig` at about 22 ms.

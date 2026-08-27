@@ -6,8 +6,8 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash}"
 . "$CUSTOM_DIR/h-common.sh"
 
 BIN="$CUSTOM_DIR/gigahash-zk-12.9"
-DOWNLOAD_URL="https://cdn.gigahash.cloud/releases/1.7/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9?v=1.7-verified"
-EXPECTED_SHA256="b1f8c91172dc5f84fc7648ae9119b525efbc4d6953e267549bad4a4d17617ea1"
+DOWNLOAD_URL="https://cdn.gigahash.cloud/releases/1.8/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9"
+EXPECTED_SHA256="bd0c9ca5b626fceb1e7c71cb852073a1b4c30cdc6477925947e589d27b19139c"
 STATS_FILE="${CUSTOM_LOG_BASENAME}.json"
 
 mkdir -p "$(dirname "$CUSTOM_LOG_BASENAME")"
@@ -22,7 +22,7 @@ verify_binary() {
 download_binary() {
   local tmp="${BIN}.download.$$"
   rm -f "$tmp"
-  echo "[gigahash-hiveos] Downloading official GigaHash ZK v1.7..."
+  echo "[gigahash-hiveos] Downloading official GigaHash ZK v1.8..."
   if command -v curl >/dev/null 2>&1; then
     curl -fL --retry 3 --connect-timeout 15 -o "$tmp" "$DOWNLOAD_URL" || return 1
   elif command -v wget >/dev/null 2>&1; then
