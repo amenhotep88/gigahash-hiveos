@@ -153,12 +153,14 @@ EOF
   rm -rf "$tmp"
 }
 
-test_srb_download_uses_rig_accessible_cdn() {
+test_srb_download_uses_rig_accessible_cdn_parts() {
   local run_script
   run_script="$(cat "$SPLIT_DIR/h-run.sh")"
   assert_contains "$run_script" \
-    "SRB_URL='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/srbminer_custom-3.6.0.tar.gz'" \
-    'SRBMiner CDN URL'
+    "SRB_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/srbminer_custom-3.6.0.tar.gz.part-'" \
+    'SRBMiner CDN part URL'
+  assert_contains "$run_script" "SRB_PART_LAST=26" 'SRBMiner last archive part'
+  assert_contains "$run_script" 'cat "$part" >> "$tmp_archive"' 'SRBMiner archive assembly'
   [[ "$run_script" != *'github.com/doktor83/SRBMiner-Multi/releases/download/'* ]] || \
     fail 'SRBMiner still depends on blocked GitHub release assets'
 }
@@ -166,5 +168,5 @@ test_srb_download_uses_rig_accessible_cdn() {
 test_config_generates_fixed_redrig_split
 test_run_starts_both_miners_on_disjoint_gpus_and_stops_peer
 test_stats_exports_only_nock_rate
-test_srb_download_uses_rig_accessible_cdn
+test_srb_download_uses_rig_accessible_cdn_parts
 echo 'PASS: split wrapper behavior'

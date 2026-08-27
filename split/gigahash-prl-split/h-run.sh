@@ -8,7 +8,8 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash-prl-split}"
 GH_BIN="$CUSTOM_DIR/gigahash-zk-12.9"
 GH_URL='https://cdn.gigahash.cloud/releases/1.7/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9?v=1.7-verified'
 GH_SHA256='b1f8c91172dc5f84fc7648ae9119b525efbc4d6953e267549bad4a4d17617ea1'
-SRB_URL='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/srbminer_custom-3.6.0.tar.gz'
+SRB_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/srbminer_custom-3.6.0.tar.gz.part-'
+SRB_PART_LAST=26
 SRB_SHA256='9908635af2a12f925d92f6d15e79f2f8df4b57070e478bd1c7e30d282ee10fb3'
 SRB_VENDOR_DIR="$CUSTOM_DIR/vendor/srbminer-3.6.0"
 GH_STATS="${CUSTOM_LOG_BASENAME}-nock.json"
@@ -33,14 +34,25 @@ install_gh() {
 }
 
 install_srb() {
-  local archive tmp_extract candidate
+  local archive tmp_archive tmp_extract candidate part part_index part_suffix
   archive="$CUSTOM_DIR/vendor/srbminer_custom-3.6.0.tar.gz"
+  tmp_archive="${archive}.download.$$"
   tmp_extract="$CUSTOM_DIR/vendor/.srbminer-3.6.0.$$"
 
   if [[ ! -f "$archive" ]] || ! verify_sha256 "$archive" "$SRB_SHA256"; then
-    echo '[split] Downloading official SRBMiner-MULTI v3.6.0...'
-    rm -f "$archive"
-    download_file "$SRB_URL" "$archive" || return 1
+    echo '[split] Downloading verified SRBMiner-MULTI v3.6.0 mirror...'
+    rm -f "$archive" "$tmp_archive" "${tmp_archive}.part-"*
+    for part_index in $(seq 0 "$SRB_PART_LAST"); do
+      printf -v part_suffix '%02d' "$part_index"
+      part="${tmp_archive}.part-${part_suffix}"
+      if ! download_file "${SRB_PART_BASE}${part_suffix}" "$part"; then
+        rm -f "$tmp_archive" "${tmp_archive}.part-"*
+        return 1
+      fi
+      cat "$part" >> "$tmp_archive"
+      rm -f "$part"
+    done
+    mv -f "$tmp_archive" "$archive"
   fi
   if ! verify_sha256 "$archive" "$SRB_SHA256"; then
     echo '[split] ERROR: SRBMiner SHA256 mismatch' >&2
