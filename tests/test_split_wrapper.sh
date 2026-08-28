@@ -95,7 +95,7 @@ EOF
 
   cat > "$fake_path/sha256sum" <<'EOF'
 #!/usr/bin/env bash
-echo 'bd0c9ca5b626fceb1e7c71cb852073a1b4c30cdc6477925947e589d27b19139c  placeholder'
+echo '3bc91c3806d244d9d5795bd9a2ddaed1ee57391182113978dd14ed3e9b972121  placeholder'
 EOF
   chmod 755 "$fake_path/sha256sum"
 
@@ -120,6 +120,7 @@ EOF
   assert_eq "$rc" '7' 'combined wrapper exit status'
   assert_contains "$gh_args" '--server 84.32.220.164:9100' 'GigaHash server args'
   assert_contains "$gh_args" '--instances 2' 'GigaHash instances args'
+  assert_contains "$gh_args" '--low-cpu' 'GigaHash low-CPU mode'
   assert_contains "$gh_args" '--devices 0,1,2,3' 'GigaHash device args'
   assert_contains "$prl_args" '--algorithm-gpu pearlhash' 'SRBMiner algorithm args'
   assert_contains "$prl_args" '--pool prl-ru.kryptex.network:7048' 'SRBMiner pool args'
@@ -155,12 +156,12 @@ test_stats_exports_nock_and_pearlhash_on_disjoint_gpus() {
   mkdir -p "$custom" "$tmp/log" "$fake_path"
   cat > "$custom/h-manifest.conf" <<EOF
 CUSTOM_NAME=gigahash-prl-split
-CUSTOM_VERSION=1.0.4
+CUSTOM_VERSION=1.0.5
 CUSTOM_CONFIG_FILENAME=$custom/gigahash-prl-split.conf
 CUSTOM_LOG_BASENAME=$tmp/log/gigahash-prl-split
 EOF
   cat > "$tmp/log/gigahash-prl-split-nock.json" <<'EOF'
-{"hashrate":14560,"uptime_seconds":300,"miner_version":"1.8","gpus":[{"device_index":0,"hashrate":3670,"temperature_celsius":54,"fan_percent":43},{"device_index":1,"hashrate":3670,"temperature_celsius":57,"fan_percent":30},{"device_index":2,"hashrate":3600,"temperature_celsius":58,"fan_percent":30},{"device_index":3,"hashrate":3620,"temperature_celsius":56,"fan_percent":32}]}
+{"hashrate":14560,"uptime_seconds":300,"miner_version":"1.9","gpus":[{"device_index":0,"hashrate":3670,"temperature_celsius":54,"fan_percent":43},{"device_index":1,"hashrate":3670,"temperature_celsius":57,"fan_percent":30},{"device_index":2,"hashrate":3600,"temperature_celsius":58,"fan_percent":30},{"device_index":3,"hashrate":3620,"temperature_celsius":56,"fan_percent":32}]}
 EOF
 
   cat > "$fake_path/curl" <<'EOF'
@@ -199,12 +200,12 @@ test_stats_preserves_nock_when_srb_api_is_unusable() {
   mkdir -p "$custom" "$tmp/log" "$fake_path"
   cat > "$custom/h-manifest.conf" <<EOF
 CUSTOM_NAME=gigahash-prl-split
-CUSTOM_VERSION=1.0.4
+CUSTOM_VERSION=1.0.5
 CUSTOM_CONFIG_FILENAME=$custom/gigahash-prl-split.conf
 CUSTOM_LOG_BASENAME=$tmp/log/gigahash-prl-split
 EOF
   cat > "$tmp/log/gigahash-prl-split-nock.json" <<'EOF'
-{"hashrate":14560,"uptime_seconds":300,"miner_version":"1.8","gpus":[{"device_index":0,"hashrate":3670,"temperature_celsius":54,"fan_percent":43},{"device_index":1,"hashrate":3670,"temperature_celsius":57,"fan_percent":30},{"device_index":2,"hashrate":3600,"temperature_celsius":58,"fan_percent":30},{"device_index":3,"hashrate":3620,"temperature_celsius":56,"fan_percent":32}]}
+{"hashrate":14560,"uptime_seconds":300,"miner_version":"1.9","gpus":[{"device_index":0,"hashrate":3670,"temperature_celsius":54,"fan_percent":43},{"device_index":1,"hashrate":3670,"temperature_celsius":57,"fan_percent":30},{"device_index":2,"hashrate":3600,"temperature_celsius":58,"fan_percent":30},{"device_index":3,"hashrate":3620,"temperature_celsius":56,"fan_percent":32}]}
 EOF
   cat > "$fake_path/curl" <<'EOF'
 #!/usr/bin/env bash
@@ -243,10 +244,10 @@ test_srb_download_uses_rig_accessible_cdn_parts() {
     fail 'SRBMiner still depends on blocked GitHub release assets'
 }
 
-test_split_package_version_is_1_0_4() {
-  assert_contains "$(cat "$SPLIT_DIR/h-manifest.conf")" 'CUSTOM_VERSION=1.0.4' 'split manifest version'
-  assert_contains "$(cat "$REPO_DIR/build-split.sh")" "VERSION='1.0.4'" 'split archive version'
-  assert_contains "$(cat "$SPLIT_DIR/h-stats.sh")" 'split-1.0.4/gh-' 'split stats version'
+test_split_package_version_is_1_0_5() {
+  assert_contains "$(cat "$SPLIT_DIR/h-manifest.conf")" 'CUSTOM_VERSION=1.0.5' 'split manifest version'
+  assert_contains "$(cat "$REPO_DIR/build-split.sh")" "VERSION='1.0.5'" 'split archive version'
+  assert_contains "$(cat "$SPLIT_DIR/h-stats.sh")" 'split-1.0.5/gh-' 'split stats version'
 }
 
 test_config_generates_fixed_redrig_split
@@ -255,5 +256,5 @@ test_find_srb_binary_accepts_hiveos_custom_binary_name
 test_stats_exports_nock_and_pearlhash_on_disjoint_gpus
 test_stats_preserves_nock_when_srb_api_is_unusable
 test_srb_download_uses_rig_accessible_cdn_parts
-test_split_package_version_is_1_0_4
+test_split_package_version_is_1_0_5
 echo 'PASS: split wrapper behavior'

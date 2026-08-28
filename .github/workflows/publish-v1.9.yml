@@ -1,0 +1,86 @@
+name: Publish GigaHash HiveOS v1.9.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/publish-v1.9.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download and verify official GigaHash ZK v1.9
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 20 \
+            -o /tmp/gigahash-zk-12.9 \
+            https://cdn.gigahash.cloud/releases/1.9/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9
+          echo '3bc91c3806d244d9d5795bd9a2ddaed1ee57391182113978dd14ed3e9b972121  /tmp/gigahash-zk-12.9' | sha256sum -c -
+          chmod 755 /tmp/gigahash-zk-12.9
+          test "$(/tmp/gigahash-zk-12.9 --version)" = 'gigahash-zk 1.9'
+          /tmp/gigahash-zk-12.9 --help | grep -F -- '--low-cpu'
+
+      - name: Build verified jsDelivr mirror parts
+        run: |
+          set -euo pipefail
+          stage="$(mktemp -d)"
+          mkdir -p "$stage/gigahash-zk"
+          install -m 0755 /tmp/gigahash-zk-12.9 "$stage/gigahash-zk/gigahash-zk"
+          tar --sort=name --owner=0 --group=0 --numeric-owner \
+            --mtime='UTC 2026-08-28 16:13:00' \
+            -C "$stage" -czf /tmp/gigahash-zk-1.9.tar.gz gigahash-zk
+          echo '4f45a46f2515a7f5c77a764679bf5de0e79f77505ee5d0f59ce6b9338d6f8730  /tmp/gigahash-zk-1.9.tar.gz' | sha256sum -c -
+          find vendor -maxdepth 1 -name 'gigahash-zk-1.9.tar.gz.part-*' -delete
+          split -b 700000 -d -a 3 /tmp/gigahash-zk-1.9.tar.gz \
+            vendor/gigahash-zk-1.9.tar.gz.part-
+          test "$(find vendor -maxdepth 1 -name 'gigahash-zk-1.9.tar.gz.part-*' | wc -l)" -eq 80
+
+      - name: Test and build HiveOS packages
+        run: |
+          set -euo pipefail
+          chmod 755 tests/test_release_1_9.sh
+          for test_file in tests/*.sh; do bash "$test_file"; done
+          ./build.sh
+          ./build-split.sh
+          echo 'c1c3376117cf9827de6153d5e67f1a05b5b89dfc21fe64394294599eb484a67f  gigahash-1.9.0.tar.gz' | sha256sum -c -
+          echo 'b0302aa998eeacd35211f9e1fd5022fdaf69163a4b76463babd17a477bb84d29  gigahash-prl-split-1.0.5.tar.gz' | sha256sum -c -
+
+      - name: Commit published packages
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add gigahash-1.9.0.tar.gz gigahash-prl-split-1.0.5.tar.gz \
+            vendor/gigahash-zk-1.9.tar.gz.part-*
+          git commit -m 'Publish verified GigaHash ZK v1.9 assets'
+          git push origin HEAD:main
+          echo "ASSET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.9.0 \
+            gigahash-1.9.0.tar.gz \
+            gigahash-prl-split-1.0.5.tar.gz \
+            --target "$ASSET_COMMIT" \
+            --title 'GigaHash ZK v1.9.0 for HiveOS' \
+            --notes-file - <<'NOTES'
+          HiveOS wrappers for the official GigaHash ZK v1.9 CUDA 12.9 miner.
+
+          - Standard package: `gigahash-1.9.0.tar.gz`; `--low-cpu` remains optional through Extra Config Arguments.
+          - redrig split package: `gigahash-prl-split-1.0.5.tar.gz`; NOCK GPUs 0–3 use `--instances 2 --low-cpu`, PRL GPUs 4–7 are unchanged.
+          - Official binary SHA-256: `3bc91c3806d244d9d5795bd9a2ddaed1ee57391182113978dd14ed3e9b972121`.
+          - Standard package SHA-256: `c1c3376117cf9827de6153d5e67f1a05b5b89dfc21fe64394294599eb484a67f`.
+          - Split package SHA-256: `b0302aa998eeacd35211f9e1fd5022fdaf69163a4b76463babd17a477bb84d29`.
+
+          GigaHash documents low-CPU mode as reducing host CPU load at the cost of hashrate and increased VRAM use.
+          NOTES
