@@ -1,0 +1,95 @@
+name: Publish GigaHash HiveOS v2.0.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/publish-v2.0.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download and verify official GigaHash ZK v2.0
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 20 \
+            -o /tmp/gigahash-zk-12.9 \
+            https://cdn.gigahash.cloud/releases/2.0/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9
+          echo 'ec6b9a9fed28b34c3d2b33bae381021d7ae4704f0bd295841cea6bd555f7a0a7  /tmp/gigahash-zk-12.9' | sha256sum -c -
+          chmod 755 /tmp/gigahash-zk-12.9
+          test "$(/tmp/gigahash-zk-12.9 --version)" = 'gigahash-zk 2.0'
+          /tmp/gigahash-zk-12.9 --help | grep -F -- '--low-cpu'
+          /tmp/gigahash-zk-12.9 --help | grep -F -- '--backup-server'
+
+      - name: Build verified jsDelivr mirror parts
+        run: |
+          set -euo pipefail
+          stage="$(mktemp -d)"
+          mkdir -p "$stage/gigahash-zk"
+          install -m 0755 /tmp/gigahash-zk-12.9 "$stage/gigahash-zk/gigahash-zk"
+          tar --sort=name --owner=0 --group=0 --numeric-owner \
+            --mtime='UTC 2026-08-29 00:00:00' \
+            -C "$stage" -czf /tmp/gigahash-zk-2.0.tar.gz gigahash-zk
+          echo '6cb70e8d7d79b9d2b851b08d71059e94869a345918aa35dba908563e6268e7d0  /tmp/gigahash-zk-2.0.tar.gz' | sha256sum -c -
+          find vendor -maxdepth 1 -name 'gigahash-zk-2.0.tar.gz.part-*' -delete
+          split -b 700000 -d -a 3 /tmp/gigahash-zk-2.0.tar.gz \
+            vendor/gigahash-zk-2.0.tar.gz.part-
+          test "$(find vendor -maxdepth 1 -name 'gigahash-zk-2.0.tar.gz.part-*' | wc -l)" -eq 55
+
+      - name: Test and build HiveOS packages
+        run: |
+          set -euo pipefail
+          chmod 755 tests/test_release_2_0.sh
+          for test_file in tests/*.sh; do bash "$test_file"; done
+          ./build.sh
+          echo '04f47d9b695cf3724e8d90faf9994d8f3c71252cdad834222cf383c7a5e2329c  gigahash-2.0.0.tar.gz' | sha256sum -c -
+
+      - name: Commit published packages
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add gigahash-2.0.0.tar.gz vendor/gigahash-zk-2.0.tar.gz.part-*
+          if git diff --cached --quiet; then
+            echo 'Verified package assets are already committed.'
+          else
+            git commit -m 'Publish verified GigaHash ZK v2.0 assets'
+            git push origin HEAD:main
+          fi
+          echo "ASSET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Publish standard GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/release-notes.md <<'NOTES'
+          HiveOS wrapper for the official GigaHash ZK v2.0 CUDA 12.9 miner.
+
+          - Package: `gigahash-2.0.0.tar.gz`; `--low-cpu` and `--backup-server` remain optional through Extra Config Arguments.
+          - Official binary SHA-256: `ec6b9a9fed28b34c3d2b33bae381021d7ae4704f0bd295841cea6bd555f7a0a7`.
+          - Package SHA-256: `04f47d9b695cf3724e8d90faf9994d8f3c71252cdad834222cf383c7a5e2329c`.
+
+          GigaHash v2.0 lowers host RAM use and PCIe traffic and adds an explicit backup-server option.
+          NOTES
+
+          if gh release view v2.0.0 >/dev/null 2>&1; then
+            gh release upload v2.0.0 gigahash-2.0.0.tar.gz --clobber
+            gh release edit v2.0.0 \
+              --title 'GigaHash ZK v2.0.0 for HiveOS' \
+              --notes-file /tmp/release-notes.md
+          else
+            gh release create v2.0.0 \
+              gigahash-2.0.0.tar.gz \
+              --target "$ASSET_COMMIT" \
+              --title 'GigaHash ZK v2.0.0 for HiveOS' \
+              --notes-file /tmp/release-notes.md
+          fi

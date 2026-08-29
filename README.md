@@ -1,12 +1,12 @@
-# GigaHash ZK v1.9 — HiveOS Custom Miner 1.9.0
+# GigaHash ZK v2.0 — HiveOS Custom Miner 2.0.0
 
 Unofficial HiveOS wrapper for the official `gigahash.cloud` NOCK ZK CUDA miner.
-The proprietary miner binary is **not bundled**. On first start, the wrapper reconstructs a mirror archive built from the official v1.9 binary and verifies both the archive and binary SHA-256 checksums.
+The proprietary miner binary is **not bundled**. On first start, the wrapper reconstructs a mirror archive built from the official v2.0 binary and verifies both the archive and binary SHA-256 checksums.
 
 ## Flight Sheet
 
 - Miner: **Custom**
-- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-1.9.0.tar.gz`
+- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-2.0.0.tar.gz`
 - Hash algorithm: leave blank / `----`
 - Wallet and worker template: **`%WAL%`**
 - Pool URL: `ru1.gigahash.cloud:9100`
@@ -28,21 +28,22 @@ Miner output is mirrored to both the `miner` console and the log used by HiveOS 
 
 ## Official miner pinned by this package
 
-- GigaHash ZK: v1.9
+- GigaHash ZK: v2.0
 - CUDA build: 12.9
-- URL: `https://cdn.gigahash.cloud/releases/1.9/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
-- SHA256: `3bc91c3806d244d9d5795bd9a2ddaed1ee57391182113978dd14ed3e9b972121`
+- URL: `https://cdn.gigahash.cloud/releases/2.0/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
+- SHA256: `ec6b9a9fed28b34c3d2b33bae381021d7ae4704f0bd295841cea6bd555f7a0a7`
 
-## Miner changes observed in v1.9
+## Miner changes observed in v2.0
 
-- added `--low-cpu` for ZK: approximately one quarter of the host CPU load,
-  at the cost of hashrate and higher VRAM use;
-- updated official ZK binary and checksum.
+- lower host RAM usage;
+- less PCIe traffic;
+- added `--backup-server` for an explicit fallback endpoint;
+- retained optional `--low-cpu`, `--devices`, and native JSON stats support.
 
-The v1.9 binary, command-line interface, and published checksum were verified
-directly from the GigaHash CDN before this wrapper was built. Low-CPU mode is
-optional and is enabled only when explicitly supplied through Extra Config
-Arguments.
+The v2.0 binary, command-line interface, and published checksum were verified
+directly from the GigaHash CDN before this wrapper was built. Low-CPU mode and
+backup endpoint overrides are enabled only when explicitly supplied through
+Extra Config Arguments.
 
 ## Notes
 

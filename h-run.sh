@@ -6,10 +6,10 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash}"
 . "$CUSTOM_DIR/h-common.sh"
 
 BIN="$CUSTOM_DIR/gigahash-zk-12.9"
-GH_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/gigahash-zk-1.9.tar.gz.part-'
-GH_PART_LAST=79
-GH_ARCHIVE_SHA256='4f45a46f2515a7f5c77a764679bf5de0e79f77505ee5d0f59ce6b9338d6f8730'
-EXPECTED_SHA256='3bc91c3806d244d9d5795bd9a2ddaed1ee57391182113978dd14ed3e9b972121'
+GH_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/gigahash-zk-2.0.tar.gz.part-'
+GH_PART_LAST=54
+GH_ARCHIVE_SHA256='6cb70e8d7d79b9d2b851b08d71059e94869a345918aa35dba908563e6268e7d0'
+EXPECTED_SHA256='ec6b9a9fed28b34c3d2b33bae381021d7ae4704f0bd295841cea6bd555f7a0a7'
 STATS_FILE="${CUSTOM_LOG_BASENAME}.json"
 
 mkdir -p "$(dirname "$CUSTOM_LOG_BASENAME")"
@@ -23,9 +23,9 @@ verify_binary() {
 
 download_binary() {
   local tmp_dir tmp_archive part part_index part_suffix candidate got
-  tmp_dir="$(mktemp -d "$CUSTOM_DIR/.gigahash-1.9.XXXXXX")" || return 1
-  tmp_archive="$tmp_dir/gigahash-zk-1.9.tar.gz"
-  echo "[gigahash-hiveos] Downloading verified GigaHash ZK v1.9 mirror..."
+  tmp_dir="$(mktemp -d "$CUSTOM_DIR/.gigahash-2.0.XXXXXX")" || return 1
+  tmp_archive="$tmp_dir/gigahash-zk-2.0.tar.gz"
+  echo "[gigahash-hiveos] Downloading verified GigaHash ZK v2.0 mirror..."
   for part_index in $(seq 0 "$GH_PART_LAST"); do
     printf -v part_suffix '%03d' "$part_index"
     part="$tmp_dir/part-$part_suffix"

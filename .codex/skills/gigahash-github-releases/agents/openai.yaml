@@ -1,3 +1,0 @@
-interface:
-  display_name: "GigaHash GitHub Releases"
-  short_description: "Validate and publish GigaHash HiveOS releases"

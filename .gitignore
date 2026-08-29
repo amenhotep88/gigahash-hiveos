@@ -2,3 +2,4 @@ gigahash-zk-12.9
 gigahash.conf
 gigahash.json
 *.log
+.worktrees/

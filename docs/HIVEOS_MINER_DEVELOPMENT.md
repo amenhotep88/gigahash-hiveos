@@ -14,9 +14,9 @@
 | `h-run.sh` | проверенная загрузка binary mirror, аргументы и запуск |
 | `h-stats.sh` | JSON/console stats → HiveOS JSON |
 | `build.sh` | воспроизводимый `gigahash-X.Y.Z.tar.gz` |
-| `tests/test_release_1_9.sh` | release invariants текущей версии |
-| `vendor/gigahash-zk-1.9.tar.gz.part-*` | jsDelivr mirror parts официального binary archive |
-| `.github/workflows/publish-v1.9.yml` | проверка, сборка и GitHub Release |
+| `tests/test_release_2_0.sh` | release invariants текущей версии |
+| `vendor/gigahash-zk-2.0.tar.gz.part-*` | jsDelivr mirror parts официального binary archive |
+| `.github/workflows/publish-v2.0.yml` | проверка, сборка и GitHub Release |
 
 В проекте нет split, PRL или SRBMiner.
 
@@ -103,8 +103,8 @@ HiveOS использует generic hash units: `1 proof/s` отображает
 ```bash
 for test_file in tests/*.sh; do bash "$test_file"; done
 ./build.sh
-sha256sum gigahash-1.9.0.tar.gz
-tar -tzf gigahash-1.9.0.tar.gz
+sha256sum gigahash-2.0.0.tar.gz
+tar -tzf gigahash-2.0.0.tar.gz
 ```
 
 Дополнительно проверить:

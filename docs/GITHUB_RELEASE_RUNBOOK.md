@@ -5,7 +5,7 @@
 - Repository: `https://github.com/amenhotep88/gigahash-hiveos`
 - Active branch: `main`
 - Active product: один обычный GigaHash ZK HiveOS package
-- Current tag scheme: official-wrapper package version, например `v1.9.0`
+- Current tag scheme: official-wrapper package version, например `v2.0.0`
 - Split/PRL assets запрещены текущим решением проекта.
 
 ## 2. Авторизация
@@ -42,15 +42,15 @@ git diff --check
 for test_file in tests/*.sh; do bash "$test_file"; done
 ./build.sh
 sha256sum gigahash-*.tar.gz
-tar -tzf gigahash-1.9.0.tar.gz
+tar -tzf gigahash-2.0.0.tar.gz
 git diff --check
 git status --short
 ```
 
-Для текущей v1.9 ожидаемый package SHA-256:
+Для текущей v2.0 ожидаемый package SHA-256:
 
 ```text
-c1c3376117cf9827de6153d5e67f1a05b5b89dfc21fe64394294599eb484a67f
+04f47d9b695cf3724e8d90faf9994d8f3c71252cdad834222cf383c7a5e2329c
 ```
 
 ## 6. Push

@@ -10,9 +10,9 @@
 
 | Поле | Текущее значение |
 |---|---|
-| Официальный miner | GigaHash ZK `v1.9` |
+| Официальный miner | GigaHash ZK `v2.0` |
 | CUDA build | `12.9` |
-| HiveOS package | `gigahash-1.9.0.tar.gz` |
+| HiveOS package | `gigahash-2.0.0.tar.gz` |
 | Default pool | `ru1.gigahash.cloud:9100` |
 | Wallet template | `%WAL%` |
 | Default process model | один процесс GigaHash на весь риг |
@@ -53,7 +53,7 @@ CUDA-алгоритм, proof pipeline, CPU↔GPU синхронизации и �
 
 ```text
 Miner: Custom
-Installation URL: https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-1.9.0.tar.gz
+Installation URL: https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-2.0.0.tar.gz
 Hash algorithm: blank / ----
 Wallet and worker template: %WAL%
 Pool URL: ru1.gigahash.cloud:9100
@@ -119,9 +119,9 @@ earned = Δpending + Δreserved + Δpaid + Δpayout_costs
 
 ## 9. Следующие задачи
 
-Пока новый официальный бинарник не вышел:
+После выпуска официального v2.0:
 
 1. Не менять runtime-код без конкретной неисправности.
-2. Наблюдать стабильность v1.9 и полные 24-часовые окна выплат.
+2. Сначала развернуть v2.0 на одном контрольном риге и наблюдать стабильность и полное 24-часовое окно выплат.
 3. При выходе новой версии: сохранить старые контрольные данные, проверить binary/version/help/SHA, обновить mirror parts и wrapper constants, пройти release runbook.
 4. После каждого материального изменения обновлять этот handoff и дату среза.
