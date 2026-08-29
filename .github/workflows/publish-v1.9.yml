@@ -49,38 +49,54 @@ jobs:
           chmod 755 tests/test_release_1_9.sh
           for test_file in tests/*.sh; do bash "$test_file"; done
           ./build.sh
-          ./build-split.sh
           echo 'c1c3376117cf9827de6153d5e67f1a05b5b89dfc21fe64394294599eb484a67f  gigahash-1.9.0.tar.gz' | sha256sum -c -
-          echo 'b0302aa998eeacd35211f9e1fd5022fdaf69163a4b76463babd17a477bb84d29  gigahash-prl-split-1.0.5.tar.gz' | sha256sum -c -
 
       - name: Commit published packages
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add gigahash-1.9.0.tar.gz gigahash-prl-split-1.0.5.tar.gz \
-            vendor/gigahash-zk-1.9.tar.gz.part-*
-          git commit -m 'Publish verified GigaHash ZK v1.9 assets'
-          git push origin HEAD:main
+          git add gigahash-1.9.0.tar.gz vendor/gigahash-zk-1.9.tar.gz.part-*
+          if git diff --cached --quiet; then
+            echo 'Verified package assets are already committed.'
+          else
+            git commit -m 'Publish verified GigaHash ZK v1.9 assets'
+            git push origin HEAD:main
+          fi
           echo "ASSET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
-      - name: Create GitHub release
+      - name: Publish standard GitHub release and remove retired split assets
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create v1.9.0 \
-            gigahash-1.9.0.tar.gz \
-            gigahash-prl-split-1.0.5.tar.gz \
-            --target "$ASSET_COMMIT" \
-            --title 'GigaHash ZK v1.9.0 for HiveOS' \
-            --notes-file - <<'NOTES'
-          HiveOS wrappers for the official GigaHash ZK v1.9 CUDA 12.9 miner.
+          set -euo pipefail
+          cat > /tmp/release-notes.md <<'NOTES'
+          HiveOS wrapper for the official GigaHash ZK v1.9 CUDA 12.9 miner.
 
-          - Standard package: `gigahash-1.9.0.tar.gz`; `--low-cpu` remains optional through Extra Config Arguments.
-          - redrig split package: `gigahash-prl-split-1.0.5.tar.gz`; NOCK GPUs 0–3 use `--instances 2 --low-cpu`, PRL GPUs 4–7 are unchanged.
+          - Package: `gigahash-1.9.0.tar.gz`; `--low-cpu` remains optional through Extra Config Arguments.
           - Official binary SHA-256: `3bc91c3806d244d9d5795bd9a2ddaed1ee57391182113978dd14ed3e9b972121`.
-          - Standard package SHA-256: `c1c3376117cf9827de6153d5e67f1a05b5b89dfc21fe64394294599eb484a67f`.
-          - Split package SHA-256: `b0302aa998eeacd35211f9e1fd5022fdaf69163a4b76463babd17a477bb84d29`.
+          - Package SHA-256: `c1c3376117cf9827de6153d5e67f1a05b5b89dfc21fe64394294599eb484a67f`.
 
           GigaHash documents low-CPU mode as reducing host CPU load at the cost of hashrate and increased VRAM use.
           NOTES
+
+          if gh release view v1.9.0 >/dev/null 2>&1; then
+            gh release upload v1.9.0 gigahash-1.9.0.tar.gz --clobber
+            gh release edit v1.9.0 \
+              --title 'GigaHash ZK v1.9.0 for HiveOS' \
+              --notes-file /tmp/release-notes.md
+          else
+            gh release create v1.9.0 \
+              gigahash-1.9.0.tar.gz \
+              --target "$ASSET_COMMIT" \
+              --title 'GigaHash ZK v1.9.0 for HiveOS' \
+              --notes-file /tmp/release-notes.md
+          fi
+
+          while IFS= read -r asset_id; do
+            [[ -n "$asset_id" ]] || continue
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id"
+          done < <(
+            gh api --paginate "repos/$GITHUB_REPOSITORY/releases" \
+              --jq '.[] | .assets[] | select(.name | startswith("gigahash-prl-split-")) | .id'
+          )

@@ -16,23 +16,6 @@ The proprietary miner binary is **not bundled**. On first start, the wrapper rec
 The HiveOS rig name is passed automatically as `--worker-name`. Use `%WAL%` only;
 the wrapper also strips a matching `.worker-name` suffix defensively when HiveOS adds one.
 
-## NOCK + PRL split package
-
-The repository also publishes a dedicated `redrig` package that works around
-HiveOS's one-Custom-Miner-per-Flight-Sheet limitation by launching both miners
-from one wrapper:
-
-- GPU `0,1,2,3`: GigaHash NOCK ZK v1.9 with `--instances 2 --low-cpu`;
-- GPU `4,5,6,7`: SRBMiner-MULTI v3.6.0 `pearlhash` on Kryptex.
-
-Installation URL:
-
-`https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-prl-split-1.0.5.tar.gz`
-
-Use the existing NOCK wallet, `%WAL%` template, and pool URL
-`ru1.gigahash.cloud:9100`. Leave Extra Config Arguments blank. Full details are in
-[`split/gigahash-prl-split/README.md`](split/gigahash-prl-split/README.md).
-
 ## Stats
 
 HiveOS displays GigaHash proof rate using its generic hash-rate fields:
@@ -58,7 +41,8 @@ Miner output is mirrored to both the `miner` console and the log used by HiveOS 
 
 The v1.9 binary, command-line interface, and published checksum were verified
 directly from the GigaHash CDN before this wrapper was built. Low-CPU mode is
-optional in the standard package and pinned only in the dedicated split package.
+optional and is enabled only when explicitly supplied through Extra Config
+Arguments.
 
 ## Notes
 
