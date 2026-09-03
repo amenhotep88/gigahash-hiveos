@@ -1,0 +1,67 @@
+name: Publish GigaHash HiveOS v2.2 AMD
+
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/publish-v2.2-amd.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download and verify official ROCm miner
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 20 -o /tmp/gigahash-zk-rocm10.0 https://cdn.gigahash.cloud/releases/2.2/ubuntu22.04-rocm10.0.0/gigahash-zk-rocm10.0
+          echo 'a9bcf774b394956ef2eb0af15d9886e976abd5ab04c27d0eb5b990e9b7427019  /tmp/gigahash-zk-rocm10.0' | sha256sum -c -
+          chmod 755 /tmp/gigahash-zk-rocm10.0
+          test "$(/tmp/gigahash-zk-rocm10.0 --version)" = 'gigahash-zk 2.2'
+
+      - name: Build verified ROCm mirror parts
+        run: |
+          set -euo pipefail
+          stage="$(mktemp -d)"
+          mkdir -p "$stage/gigahash-zk-rocm10.0"
+          install -m 0755 /tmp/gigahash-zk-rocm10.0 "$stage/gigahash-zk-rocm10.0/gigahash-zk-rocm10.0"
+          tar --sort=name --owner=0 --group=0 --numeric-owner --mtime='UTC 2026-09-03 09:02:23' -C "$stage" -czf /tmp/gigahash-zk-rocm10.0-2.2.tar.gz gigahash-zk-rocm10.0
+          echo '9c967a4f89e65d29b6d2fe4e36618506040dd548dc87260df9f1ef9992a9ba12  /tmp/gigahash-zk-rocm10.0-2.2.tar.gz' | sha256sum -c -
+          split -b 700000 -d -a 3 /tmp/gigahash-zk-rocm10.0-2.2.tar.gz vendor/gigahash-zk-rocm10.0-2.2.tar.gz.part-
+          test "$(find vendor -maxdepth 1 -name 'gigahash-zk-rocm10.0-2.2.tar.gz.part-*' | wc -l)" -eq 137
+
+      - name: Test and build AMD HiveOS package
+        run: |
+          set -euo pipefail
+          chmod 755 build-amd.sh tests/test_release_2_2_amd.sh
+          bash tests/test_release_2_2_amd.sh
+          ./build-amd.sh
+          echo '7ad01faf6ce0d0269a34edc66a9e2dceaee5b58b589058e30d86433af006d468  gigahash-amd-2.2.0.tar.gz' | sha256sum -c -
+
+      - name: Commit AMD package assets
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add gigahash-amd-2.2.0.tar.gz vendor/gigahash-zk-rocm10.0-2.2.tar.gz.part-*
+          git commit -m 'Publish verified GigaHash ZK v2.2 AMD assets'
+          git push origin HEAD:main
+          echo "ASSET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Publish AMD GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > /tmp/notes.md <<'NOTES'
+          HiveOS Custom Miner for GigaHash ZK v2.2 on AMD RDNA2/RDNA3/RDNA4.
+
+          - RX 6000/7000/9000 series; Ubuntu 22.04+; ROCm 10.0 runtime included.
+          - Package: `gigahash-amd-2.2.0.tar.gz`.
+          - Official binary SHA-256: `a9bcf774b394956ef2eb0af15d9886e976abd5ab04c27d0eb5b990e9b7427019`.
+          - Package SHA-256: `7ad01faf6ce0d0269a34edc66a9e2dceaee5b58b589058e30d86433af006d468`.
+          - Default endpoint: `backup.gigahash.cloud:9100`.
+          NOTES
+          gh release create v2.2.0-amd1 gigahash-amd-2.2.0.tar.gz --target "$ASSET_COMMIT" --title 'GigaHash ZK v2.2 AMD for HiveOS' --notes-file /tmp/notes.md
