@@ -1,15 +1,15 @@
-# GigaHash ZK v2.0 — HiveOS Custom Miner 2.0.0
+# GigaHash ZK v2.2 — HiveOS Custom Miner 2.2.0
 
 Unofficial HiveOS wrapper for the official `gigahash.cloud` NOCK ZK CUDA miner.
-The proprietary miner binary is **not bundled**. On first start, the wrapper reconstructs a mirror archive built from the official v2.0 binary and verifies both the archive and binary SHA-256 checksums.
+The proprietary miner binary is **not bundled**. On first start, the wrapper reconstructs a mirror archive built from the official v2.2 binary and verifies both the archive and binary SHA-256 checksums.
 
 ## Flight Sheet
 
 - Miner: **Custom**
-- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-2.0.0.tar.gz`
+- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-2.2.0.tar.gz`
 - Hash algorithm: leave blank / `----`
 - Wallet and worker template: **`%WAL%`**
-- Pool URL: `ru1.gigahash.cloud:9100`
+- Pool URL: `backup.gigahash.cloud:9100`
 - Pass: blank
 - Extra Config Arguments: optional native GigaHash CLI args, e.g. `--low-cpu` or `--devices 0,1,2,3,4,5`
 
@@ -28,24 +28,23 @@ Miner output is mirrored to both the `miner` console and the log used by HiveOS 
 
 ## Official miner pinned by this package
 
-- GigaHash ZK: v2.0
+- GigaHash ZK: v2.2
 - CUDA build: 12.9
-- URL: `https://cdn.gigahash.cloud/releases/2.0/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
-- SHA256: `ec6b9a9fed28b34c3d2b33bae381021d7ae4704f0bd295841cea6bd555f7a0a7`
+- URL: `https://cdn.gigahash.cloud/releases/2.2/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
+- SHA256: `72cacd1f5a23fa4a983f56f0df5eaf9876ebb38a19ca637b94e5c0816e6ec5af`
 
-## Miner changes observed in v2.0
+## Verified v2.2 interface
 
-- lower host RAM usage;
-- less PCIe traffic;
-- added `--backup-server` for an explicit fallback endpoint;
-- retained optional `--low-cpu`, `--devices`, and native JSON stats support.
+- accepts comma-separated primary and backup pool endpoints;
+- retains `--backup-server`, `--low-cpu`, `--devices`, and native JSON stats support;
+- reports `gigahash-zk 2.2` through `--version`.
 
-The v2.0 binary, command-line interface, and published checksum were verified
+The v2.2 binary, command-line interface, and checksum were verified
 directly from the GigaHash CDN before this wrapper was built. Low-CPU mode and
-backup endpoint overrides are enabled only when explicitly supplied through
+additional endpoint overrides are enabled only when explicitly supplied through
 Extra Config Arguments.
 
 ## Notes
 
-The default endpoint is the developer-provided Russian server
-`ru1.gigahash.cloud:9100`, manually verified from `redrig` at about 22 ms.
+The default endpoint is `backup.gigahash.cloud:9100`, selected as the operational
+default after pool connectivity issues.
