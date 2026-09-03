@@ -1,0 +1,96 @@
+name: Publish GigaHash HiveOS v2.2.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/publish-v2.2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download and verify official GigaHash ZK v2.2
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 20 \
+            -o /tmp/gigahash-zk-12.9 \
+            https://cdn.gigahash.cloud/releases/2.2/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9
+          echo '72cacd1f5a23fa4a983f56f0df5eaf9876ebb38a19ca637b94e5c0816e6ec5af  /tmp/gigahash-zk-12.9' | sha256sum -c -
+          chmod 755 /tmp/gigahash-zk-12.9
+          test "$(/tmp/gigahash-zk-12.9 --version)" = 'gigahash-zk 2.2'
+          /tmp/gigahash-zk-12.9 --help | grep -F -- '--low-cpu'
+          /tmp/gigahash-zk-12.9 --help | grep -F -- '--backup-server'
+
+      - name: Build verified jsDelivr mirror parts
+        run: |
+          set -euo pipefail
+          stage="$(mktemp -d)"
+          mkdir -p "$stage/gigahash-zk"
+          install -m 0755 /tmp/gigahash-zk-12.9 "$stage/gigahash-zk/gigahash-zk"
+          tar --sort=name --owner=0 --group=0 --numeric-owner \
+            --mtime='UTC 2026-09-03 09:01:50' \
+            -C "$stage" -czf /tmp/gigahash-zk-2.2.tar.gz gigahash-zk
+          echo '7bc5f839561434a2145b861517c4fcbb6dea0aa8ea03a53398dc2bdccb4bd959  /tmp/gigahash-zk-2.2.tar.gz' | sha256sum -c -
+          find vendor -maxdepth 1 -name 'gigahash-zk-2.2.tar.gz.part-*' -delete
+          split -b 700000 -d -a 3 /tmp/gigahash-zk-2.2.tar.gz \
+            vendor/gigahash-zk-2.2.tar.gz.part-
+          test "$(find vendor -maxdepth 1 -name 'gigahash-zk-2.2.tar.gz.part-*' | wc -l)" -eq 55
+
+      - name: Test and build HiveOS packages
+        run: |
+          set -euo pipefail
+          chmod 755 tests/test_release_2_2.sh
+          for test_file in tests/*.sh; do bash "$test_file"; done
+          ./build.sh
+          echo 'e9c3b0133ccc902932e2199f0b35c1bc38d35dfa83e2ba0651573b536a049aa2  gigahash-2.2.0.tar.gz' | sha256sum -c -
+
+      - name: Commit published packages
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add gigahash-2.2.0.tar.gz vendor/gigahash-zk-2.2.tar.gz.part-*
+          if git diff --cached --quiet; then
+            echo 'Verified package assets are already committed.'
+          else
+            git commit -m 'Publish verified GigaHash ZK v2.2 assets'
+            git push origin HEAD:main
+          fi
+          echo "ASSET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Publish standard GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/release-notes.md <<'NOTES'
+          HiveOS wrapper for the official GigaHash ZK v2.2 CUDA 12.9 miner.
+
+          - Package: `gigahash-2.2.0.tar.gz`; `--low-cpu` and `--backup-server` remain optional through Extra Config Arguments.
+          - Official binary SHA-256: `72cacd1f5a23fa4a983f56f0df5eaf9876ebb38a19ca637b94e5c0816e6ec5af`.
+          - Package SHA-256: `e9c3b0133ccc902932e2199f0b35c1bc38d35dfa83e2ba0651573b536a049aa2`.
+          - Default endpoint: `backup.gigahash.cloud:9100`.
+
+          GigaHash v2.2 package verified against the official CUDA 12.9 binary.
+          NOTES
+
+          if gh release view v2.2.0 >/dev/null 2>&1; then
+            gh release upload v2.2.0 gigahash-2.2.0.tar.gz --clobber
+            gh release edit v2.2.0 \
+              --title 'GigaHash ZK v2.2.0 for HiveOS' \
+              --notes-file /tmp/release-notes.md
+          else
+            gh release create v2.2.0 \
+              gigahash-2.2.0.tar.gz \
+              --target "$ASSET_COMMIT" \
+              --title 'GigaHash ZK v2.2.0 for HiveOS' \
+              --notes-file /tmp/release-notes.md
+          fi
