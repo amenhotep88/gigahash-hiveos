@@ -6,9 +6,9 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash}"
 . "$CUSTOM_DIR/h-common.sh"
 
 # Pool URL field. GigaHash accepts HOST:PORT or comma-separated HOST:PORT list.
-server="${CUSTOM_URL:-ru1.gigahash.cloud:9100}"
+server="${CUSTOM_URL:-backup.gigahash.cloud:9100}"
 server="$(printf '%s' "$server" | tr '\r\n\t ' ',' | sed -E 's/,+/,/g; s/^,+//; s/,+$//')"
-[[ -n "$server" ]] || server="ru1.gigahash.cloud:9100"
+[[ -n "$server" ]] || server="backup.gigahash.cloud:9100"
 
 # For this integration, Wallet and worker template should be %WAL% only.
 payout="${CUSTOM_TEMPLATE:-}"
