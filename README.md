@@ -44,7 +44,33 @@ directly from the GigaHash CDN before this wrapper was built. Low-CPU mode and
 additional endpoint overrides are enabled only when explicitly supplied through
 Extra Config Arguments.
 
+## AMD HiveOS package
+
+The repository also contains a separate AMD package for the official GigaHash
+ZK v2.2 ROCm 10.0 binary:
+
+- Custom miner name: `gigahash-amd`
+- Package: `gigahash-amd-2.2.0.tar.gz`
+- Package version: `2.2.0-amd2`
+- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-amd-2.2.0.tar.gz`
+- Supported family declared by the release: AMD RDNA2/RDNA3/RDNA4
+- Official binary: `gigahash-zk-rocm10.0`
+- Official binary SHA-256: `a9bcf774b394956ef2eb0af15d9886e976abd5ab04c27d0eb5b990e9b7427019`
+- Package SHA-256: `d18b421071fb2df6abdaa9fcf0eab5da24b04aa1015d21443c497cbaf66ed1db`
+
+The NVIDIA and AMD packages use distinct HiveOS directories, manifests, logs,
+process names, mirror archives, tests, and release workflows. Do not mix their
+files in one Custom Miner installation.
+
 ## Notes
 
 The default endpoint is `backup.gigahash.cloud:9100`, selected as the operational
 default after pool connectivity issues.
+
+## Operations and handoff
+
+- [Current Russian handoff](docs/HANDOFF_CURRENT_2026-09-04_RU.md)
+- [Pool, profitability, and Clore rental runbook](docs/POOL_RENTAL_PROFITABILITY_RUNBOOK_RU.md)
+- [Local NoSSD to GigaHash migration and rollback](docs/NOSSD_TO_GIGAHASH_2026-09-04_RU.md)
+- [HiveOS wrapper development](docs/HIVEOS_MINER_DEVELOPMENT.md)
+- [GitHub release runbook](docs/GITHUB_RELEASE_RUNBOOK.md)

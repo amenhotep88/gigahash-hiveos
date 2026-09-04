@@ -18,6 +18,20 @@
 | `vendor/gigahash-zk-2.0.tar.gz.part-*` | jsDelivr mirror parts официального binary archive |
 | `.github/workflows/publish-v2.0.yml` | проверка, сборка и GitHub Release |
 
+Отдельный AMD/ROCm пакет:
+
+| Файл | Ответственность |
+|---|---|
+| `h-manifest-amd.conf` | имя `gigahash-amd`, версия и отдельные HiveOS paths |
+| `h-config-amd.sh` | AMD Flight Sheet → config |
+| `h-run-amd.sh` | проверка `/dev/kfd`, сборка ROCm mirror, SHA и запуск |
+| `h-stats-amd.sh` | AMD native JSON/console stats → HiveOS JSON |
+| `build-amd.sh` | воспроизводимый `gigahash-amd-2.2.0.tar.gz` |
+| `tests/test_release_2_2_amd.sh` | AMD release invariants |
+| `.github/workflows/publish-v2.2-amd.yml` | ROCm binary verification, mirror parts, package и release |
+
+NVIDIA и AMD — два отдельных Custom Miner packages. Общим остаётся только `h-common.sh`; нельзя подменять AMD scripts NVIDIA-версиями или наоборот.
+
 В проекте нет split, PRL или SRBMiner.
 
 ## 3. Runtime data flow
@@ -106,6 +120,18 @@ for test_file in tests/*.sh; do bash "$test_file"; done
 sha256sum gigahash-2.0.0.tar.gz
 tar -tzf gigahash-2.0.0.tar.gz
 ```
+
+Для AMD дополнительно:
+
+```bash
+bash tests/test_release_2_2_amd.sh
+./build-amd.sh
+sha256sum gigahash-amd-2.2.0.tar.gz
+tar -tzf gigahash-amd-2.2.0.tar.gz
+```
+
+Ожидаемый AMD package SHA-256 для `2.2.0-amd2`:
+`d18b421071fb2df6abdaa9fcf0eab5da24b04aa1015d21443c497cbaf66ed1db`.
 
 Дополнительно проверить:
 

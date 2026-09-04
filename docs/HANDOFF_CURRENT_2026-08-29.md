@@ -1,4 +1,7 @@
-# GigaHash HiveOS — authoritative handoff
+# GigaHash HiveOS — archived handoff
+
+> Этот срез сохранён как история. Текущий authoritative handoff:
+> [`HANDOFF_CURRENT_2026-09-04_RU.md`](HANDOFF_CURRENT_2026-09-04_RU.md).
 
 Дата среза: **2026-08-29 UTC**.
 
