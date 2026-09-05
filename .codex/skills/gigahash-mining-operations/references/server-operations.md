@@ -19,6 +19,12 @@ The watchdog contract:
 
 Do not simulate GPU loss on a paid live rental. Verify installation with `supervisorctl status gigahash gigahash-watchdog`; both must be `RUNNING`. A successful installation proves scheduling, not the recovery path. Repeated GPU loss is a rental defect, not a reason to create an unlimited restart loop.
 
+### NVIDIA mirror installation on Clore
+
+For the v2.2 NVIDIA mirror, aria2c interprets multiple positional URLs as mirrors of one download, not as independent part downloads. Never pass part-000 through part-054 as one positional URL array: that can leave only `part-000` and produce an archive SHA mismatch.
+
+Download each numbered URL as a separate `aria2c` job with an explicit output filename. Before concatenation, require every part `000..054` to exist and be non-empty, then concatenate in numeric order. Verify archive SHA-256 `7bc5f839561434a2145b861517c4fcbb6dea0aa8ea03a53398dc2bdccb4bd959`, extract `gigahash-zk/gigahash-zk`, and verify binary SHA-256 `72cacd1f5a23fa4a983f56f0df5eaf9876ebb38a19ca637b94e5c0816e6ec5af` before installation. Any mismatch is a hard stop: do not configure or start Supervisor.
+
 ## Local Ubuntu
 
 Use systemd with `Restart=always`, explicit worker name, `ExecStartPre` core lock only when proven for the exact GPU, and `ExecStopPost=-/usr/bin/nvidia-smi -i 0 -rgc`.

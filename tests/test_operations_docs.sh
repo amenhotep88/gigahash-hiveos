@@ -38,5 +38,9 @@ require_text .codex/skills/gigahash-mining-operations/references/server-operatio
 require_text .codex/skills/gigahash-mining-operations/references/server-operations.md 'sleep 600'
 require_text docs/POOL_RENTAL_PROFITABILITY_RUNBOOK_RU.md 'restart_limit=2_per_hour'
 require_text docs/POOL_RENTAL_PROFITABILITY_RUNBOOK_RU.md 'cron может отсутствовать'
+require_text .codex/skills/gigahash-mining-operations/references/server-operations.md 'aria2c interprets multiple positional URLs as mirrors'
+require_text .codex/skills/gigahash-mining-operations/references/server-operations.md 'part-000 through part-054'
+require_text docs/POOL_RENTAL_PROFITABILITY_RUNBOOK_RU.md 'одного файла-задания'
+require_text docs/POOL_RENTAL_PROFITABILITY_RUNBOOK_RU.md '7bc5f839561434a2145b861517c4fcbb6dea0aa8ea03a53398dc2bdccb4bd959'
 
 echo 'PASS: operational handoff and skill invariants'
