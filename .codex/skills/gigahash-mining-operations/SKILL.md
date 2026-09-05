@@ -27,5 +27,6 @@ Use the repository handoff as the authoritative project state. Preserve measured
 8. Do not raise PL or invent clock locks without an explicit request and a baseline for that exact GPU.
 9. Stage and commit only task-owned files; preserve dirty user work.
 10. Treat `gigahash` (CUDA) and `gigahash-amd` (ROCm) as separate packages, binaries, hashes, mirrors, tests, tags and releases.
+11. For multi-GPU Clore rigs, install the documented Supervisor-managed GPU-loss watchdog after the miner is stable. Do not assume cron exists.
 
 Return concise tables with assumptions, observed facts, thresholds and a clear keep/cancel or proceed/stop decision.

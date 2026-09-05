@@ -33,5 +33,10 @@ require_text docs/NOSSD_TO_GIGAHASH_2026-09-04_RU.md 'nossd-vpn-subscription-upd
 require_text docs/NOSSD_TO_GIGAHASH_2026-09-04_RU.md 'sudo crontab /root/root.crontab.before-gigahash'
 require_text .codex/skills/gigahash-mining-operations/references/clore-rentals.md '114377'
 require_text .codex/skills/gigahash-mining-operations/SKILL.md 'gigahash-amd'
+require_text .codex/skills/gigahash-mining-operations/SKILL.md 'GPU-loss watchdog'
+require_text .codex/skills/gigahash-mining-operations/references/server-operations.md 'gigahash-watchdog'
+require_text .codex/skills/gigahash-mining-operations/references/server-operations.md 'sleep 600'
+require_text docs/POOL_RENTAL_PROFITABILITY_RUNBOOK_RU.md 'restart_limit=2_per_hour'
+require_text docs/POOL_RENTAL_PROFITABILITY_RUNBOOK_RU.md 'cron может отсутствовать'
 
 echo 'PASS: operational handoff and skill invariants'
