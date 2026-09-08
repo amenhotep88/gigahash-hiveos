@@ -1,0 +1,98 @@
+name: Publish GigaHash HiveOS v2.3.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/publish-v2.3.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download and verify official GigaHash ZK v2.3
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --connect-timeout 20 \
+            -o /tmp/gigahash-zk-12.9 \
+            https://cdn.gigahash.cloud/releases/2.3/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9
+          echo '6234dbf687ee84aa1c9ef3bce798bb61fed961d4b8da6fe24777c901e27a2ae1  /tmp/gigahash-zk-12.9' | sha256sum -c -
+          chmod 755 /tmp/gigahash-zk-12.9
+          test "$(/tmp/gigahash-zk-12.9 --version)" = 'gigahash-zk 2.3'
+          /tmp/gigahash-zk-12.9 --help | grep -F -- '--low-cpu'
+          /tmp/gigahash-zk-12.9 --help | grep -F -- '--backup-server'
+
+      - name: Build verified jsDelivr mirror parts
+        env:
+          GH_PART_LAST: 57
+        run: |
+          set -euo pipefail
+          stage="$(mktemp -d)"
+          mkdir -p "$stage/gigahash-zk"
+          install -m 0755 /tmp/gigahash-zk-12.9 "$stage/gigahash-zk/gigahash-zk"
+          tar --sort=name --owner=0 --group=0 --numeric-owner \
+            --mtime='UTC 2026-09-08 18:15:20' \
+            -C "$stage" -czf /tmp/gigahash-zk-2.3.tar.gz gigahash-zk
+          echo 'bbfdfc4ed0007e1fc82c552d262d4d078cd2ad12e3ee2b45b7158c346c94a051  /tmp/gigahash-zk-2.3.tar.gz' | sha256sum -c -
+          find vendor -maxdepth 1 -name 'gigahash-zk-2.3.tar.gz.part-*' -delete
+          split -b 700000 -d -a 3 /tmp/gigahash-zk-2.3.tar.gz \
+            vendor/gigahash-zk-2.3.tar.gz.part-
+          test "$(find vendor -maxdepth 1 -name 'gigahash-zk-2.3.tar.gz.part-*' | wc -l)" -eq "$((GH_PART_LAST + 1))"
+
+      - name: Test and build HiveOS packages
+        run: |
+          set -euo pipefail
+          chmod 755 tests/test_release_2_3.sh
+          for test_file in tests/*.sh; do bash "$test_file"; done
+          ./build.sh
+          echo 'f74c93a7007f0021d5850752ed995d702acfe7fbb29fb7723918d8c9216b0ded  gigahash-2.3.0.tar.gz' | sha256sum -c -
+
+      - name: Commit published packages
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add gigahash-2.3.0.tar.gz vendor/gigahash-zk-2.3.tar.gz.part-*
+          if git diff --cached --quiet; then
+            echo 'Verified package assets are already committed.'
+          else
+            git commit -m 'Publish verified GigaHash ZK v2.3 assets'
+            git push origin HEAD:main
+          fi
+          echo "ASSET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Publish standard GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/release-notes.md <<'NOTES'
+          HiveOS wrapper for the official GigaHash ZK v2.3 CUDA 12.9 miner.
+
+          - Package: `gigahash-2.3.0.tar.gz`; `--low-cpu` and `--backup-server` remain optional through Extra Config Arguments.
+          - Official binary SHA-256: `6234dbf687ee84aa1c9ef3bce798bb61fed961d4b8da6fe24777c901e27a2ae1`.
+          - Package SHA-256: `f74c93a7007f0021d5850752ed995d702acfe7fbb29fb7723918d8c9216b0ded`.
+          - Default endpoint: `backup.gigahash.cloud:9100`.
+
+          GigaHash v2.3 package verified against the official CUDA 12.9 binary.
+          NOTES
+
+          if gh release view v2.3.0 >/dev/null 2>&1; then
+            gh release upload v2.3.0 gigahash-2.3.0.tar.gz --clobber
+            gh release edit v2.3.0 \
+              --title 'GigaHash ZK v2.3.0 for HiveOS' \
+              --notes-file /tmp/release-notes.md
+          else
+            gh release create v2.3.0 \
+              gigahash-2.3.0.tar.gz \
+              --target "$ASSET_COMMIT" \
+              --title 'GigaHash ZK v2.3.0 for HiveOS' \
+              --notes-file /tmp/release-notes.md
+          fi

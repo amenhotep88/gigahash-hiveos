@@ -14,9 +14,9 @@
 | `h-run.sh` | проверенная загрузка binary mirror, аргументы и запуск |
 | `h-stats.sh` | JSON/console stats → HiveOS JSON |
 | `build.sh` | воспроизводимый `gigahash-X.Y.Z.tar.gz` |
-| `tests/test_release_2_0.sh` | release invariants текущей версии |
-| `vendor/gigahash-zk-2.0.tar.gz.part-*` | jsDelivr mirror parts официального binary archive |
-| `.github/workflows/publish-v2.0.yml` | проверка, сборка и GitHub Release |
+| `tests/test_release_2_3.sh` | release invariants текущей версии |
+| `vendor/gigahash-zk-2.3.tar.gz.part-*` | jsDelivr mirror parts официального binary archive |
+| `.github/workflows/publish-v2.3.yml` | проверка, сборка и GitHub Release |
 
 Отдельный AMD/ROCm пакет:
 
