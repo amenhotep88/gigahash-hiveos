@@ -5,11 +5,11 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash-amd}"
 . "$CUSTOM_DIR/h-manifest.conf"
 . "$CUSTOM_DIR/h-common.sh"
 
-BIN="$CUSTOM_DIR/gigahash-zk-rocm10.0"
-GH_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/gigahash-zk-rocm10.0-2.2.tar.gz.part-'
+BIN="$CUSTOM_DIR/gigahash-zk-amd"
+GH_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/gigahash-zk-amd-2.4.tar.gz.part-'
 GH_PART_LAST=136
-GH_ARCHIVE_SHA256='9c967a4f89e65d29b6d2fe4e36618506040dd548dc87260df9f1ef9992a9ba12'
-EXPECTED_SHA256='a9bcf774b394956ef2eb0af15d9886e976abd5ab04c27d0eb5b990e9b7427019'
+GH_ARCHIVE_SHA256='9f34a1e4c341364de88b8324410e3d180fefb0f183dc38dba53b14e2469a822f'
+EXPECTED_SHA256='93d57c24b5223482cb461147baaf447797d72483aa22a37c33d292a2ea3c6802'
 STATS_FILE="${CUSTOM_LOG_BASENAME}.json"
 
 mkdir -p "$(dirname "$CUSTOM_LOG_BASENAME")"
@@ -21,9 +21,9 @@ verify_binary() {
 
 download_binary() {
   local tmp_dir tmp_archive part part_index part_suffix candidate got
-  tmp_dir="$(mktemp -d "$CUSTOM_DIR/.gigahash-amd-2.2.XXXXXX")" || return 1
-  tmp_archive="$tmp_dir/gigahash-zk-rocm10.0-2.2.tar.gz"
-  echo "[gigahash-hiveos] Downloading verified GigaHash ZK v2.2 ROCm mirror..."
+  tmp_dir="$(mktemp -d "$CUSTOM_DIR/.gigahash-amd-2.4.XXXXXX")" || return 1
+  tmp_archive="$tmp_dir/gigahash-zk-amd-2.4.tar.gz"
+  echo "[gigahash-hiveos] Downloading verified GigaHash ZK v2.4 AMD mirror..."
   for part_index in $(seq 0 "$GH_PART_LAST"); do
     printf -v part_suffix '%03d' "$part_index"
     part="$tmp_dir/part-$part_suffix"
@@ -42,8 +42,8 @@ download_binary() {
 
   got="$(sha256sum "$tmp_archive" | awk '{print $1}')"
   [[ "$got" == "$GH_ARCHIVE_SHA256" ]] || { echo "[gigahash-hiveos] ERROR: archive SHA256 mismatch" >&2; rm -rf "$tmp_dir"; return 1; }
-  tar -xzf "$tmp_archive" -C "$tmp_dir" gigahash-zk-rocm10.0/gigahash-zk-rocm10.0 || { rm -rf "$tmp_dir"; return 1; }
-  candidate="$tmp_dir/gigahash-zk-rocm10.0/gigahash-zk-rocm10.0"
+  tar -xzf "$tmp_archive" -C "$tmp_dir" gigahash-zk-amd/gigahash-zk-amd || { rm -rf "$tmp_dir"; return 1; }
+  candidate="$tmp_dir/gigahash-zk-amd/gigahash-zk-amd"
   got="$(sha256sum "$candidate" | awk '{print $1}')"
   [[ "$got" == "$EXPECTED_SHA256" ]] || { echo "[gigahash-hiveos] ERROR: binary SHA256 mismatch" >&2; rm -rf "$tmp_dir"; return 1; }
   mv -f "$candidate" "$BIN"

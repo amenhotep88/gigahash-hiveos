@@ -28,9 +28,11 @@
 | `h-config-amd.sh` | AMD Flight Sheet → config |
 | `h-run-amd.sh` | проверка `/dev/kfd`, сборка ROCm mirror, SHA и запуск |
 | `h-stats-amd.sh` | AMD native JSON/console stats → HiveOS JSON |
-| `build-amd.sh` | воспроизводимый `gigahash-amd-2.2.0.tar.gz` |
-| `tests/test_release_2_2_amd.sh` | AMD release invariants |
-| `.github/workflows/publish-v2.2-amd.yml` | ROCm binary verification, mirror parts, package и release |
+| `build-amd.sh` | воспроизводимый `gigahash-amd-2.4.0.tar.gz` |
+| `tests/test_release_2_4_amd.sh` | поведение текущего AMD package |
+| `.github/workflows/publish-v2.4-amd.yml` | official AMD archive verification, mirror parts, package и release |
+
+Файлы AMD v2.2 сохраняются как rollback-релиз.
 
 NVIDIA и AMD — два отдельных Custom Miner packages. Общим остаётся только `h-common.sh`; нельзя подменять AMD scripts NVIDIA-версиями или наоборот.
 
@@ -126,14 +128,14 @@ tar -tzf gigahash-2.4.0.tar.gz
 Для AMD дополнительно:
 
 ```bash
-bash tests/test_release_2_2_amd.sh
+bash tests/test_release_2_4_amd.sh
 ./build-amd.sh
-sha256sum gigahash-amd-2.2.0.tar.gz
-tar -tzf gigahash-amd-2.2.0.tar.gz
+sha256sum gigahash-amd-2.4.0.tar.gz
+tar -tzf gigahash-amd-2.4.0.tar.gz
 ```
 
-Ожидаемый AMD package SHA-256 для `2.2.0-amd2`:
-`d18b421071fb2df6abdaa9fcf0eab5da24b04aa1015d21443c497cbaf66ed1db`.
+Ожидаемый AMD package SHA-256 для `2.4.0-amd1`:
+`64c0a3afbd849984a5a04c4d49864f4438787d1d3fde6d8a87307d88eaf74b82`.
 
 Дополнительно проверить:
 

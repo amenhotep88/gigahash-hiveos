@@ -1,31 +1,33 @@
 # GitHub и выпуск GigaHash HiveOS package
 
-## AMD v2.2 release
+## AMD v2.4 release
 
 AMD выпускается отдельно от NVIDIA:
 
 ```text
-Workflow: .github/workflows/publish-v2.2-amd.yml
-Tag: v2.2.0-amd2
-Package: gigahash-amd-2.2.0.tar.gz
-Official binary: gigahash-zk-rocm10.0
-Official binary SHA256: a9bcf774b394956ef2eb0af15d9886e976abd5ab04c27d0eb5b990e9b7427019
-Package SHA256: d18b421071fb2df6abdaa9fcf0eab5da24b04aa1015d21443c497cbaf66ed1db
+Workflow: .github/workflows/publish-v2.4-amd.yml
+Tag: v2.4.0-amd1
+Package: gigahash-amd-2.4.0.tar.gz
+Official archive: https://cdn.gigahash.cloud/releases/2.4/hiveos/gigahash-zk-amd-2.4.tar.gz
+Official archive SHA256: 9f34a1e4c341364de88b8324410e3d180fefb0f183dc38dba53b14e2469a822f
+Official binary: gigahash-zk-amd
+Official binary SHA256: 93d57c24b5223482cb461147baaf447797d72483aa22a37c33d292a2ea3c6802
+Package SHA256: 64c0a3afbd849984a5a04c4d49864f4438787d1d3fde6d8a87307d88eaf74b82
 ```
 
-Workflow скачивает официальный ROCm binary, проверяет version/SHA, воспроизводимо создаёт archive, режет его на 137 jsDelivr parts, запускает AMD test/build, коммитит package+parts и создаёт отдельный GitHub Release. Не добавлять AMD assets в NVIDIA release/tag.
+Workflow скачивает официальный AMD HiveOS archive, проверяет archive/binary version/SHA, режет исходный архив на 137 jsDelivr parts, запускает AMD test/build, коммитит package+parts и создаёт отдельный GitHub Release. Не добавлять AMD assets в NVIDIA release/tag.
 
 Локальный gate перед push:
 
 ```bash
 bash -n h-common.sh h-config-amd.sh h-run-amd.sh h-stats-amd.sh build-amd.sh
-bash tests/test_release_2_2_amd.sh
+bash tests/test_release_2_4_amd.sh
 ./build-amd.sh
-echo 'd18b421071fb2df6abdaa9fcf0eab5da24b04aa1015d21443c497cbaf66ed1db  gigahash-amd-2.2.0.tar.gz' | sha256sum -c -
-tar -tzf gigahash-amd-2.2.0.tar.gz
+echo '64c0a3afbd849984a5a04c4d49864f4438787d1d3fde6d8a87307d88eaf74b82  gigahash-amd-2.4.0.tar.gz' | sha256sum -c -
+tar -tzf gigahash-amd-2.4.0.tar.gz
 ```
 
-После push проверить workflow, bot commit с `vendor/gigahash-zk-rocm10.0-2.2.tar.gz.part-*`, tag `v2.2.0-amd2`, release asset и jsDelivr Installation URL.
+После push проверить workflow, bot commit с `vendor/gigahash-zk-amd-2.4.tar.gz.part-*`, tag `v2.4.0-amd1`, release asset и jsDelivr Installation URL. AMD v2.2 не удалять.
 
 ## 1. Репозиторий и модель релиза
 

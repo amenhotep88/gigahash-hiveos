@@ -14,7 +14,7 @@ if [[ -s "$NATIVE_STATS" ]] && command -v jq >/dev/null 2>&1 && jq -e . "$NATIVE
   temp_json="$(jq -c '[.gpus[]? | (.temperature_celsius // 0)]' "$NATIVE_STATS")"
   fan_json="$(jq -c '[.gpus[]? | (.fan_percent // 0)]' "$NATIVE_STATS")"
   uptime="$(jq -r '.uptime_seconds // 0' "$NATIVE_STATS")"
-  miner_ver="$(jq -r '.miner_version // "2.2"' "$NATIVE_STATS")"
+  miner_ver="$(jq -r '.miner_version // "2.4"' "$NATIVE_STATS")"
   stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"%s"}' "$hs_json" "$temp_json" "$fan_json" "$uptime" "$miner_ver")"
 elif [[ -s "$LOG" ]]; then
   last_total="$(grep -E 'Total[[:space:]]+[0-9.]+[[:space:]]+(p/s|kp/s|Mp/s)' "$LOG" | tail -n 1)"
@@ -33,10 +33,10 @@ elif [[ -s "$LOG" ]]; then
     END { hs="[";ts="[";fs="[";first=1; for(i=0;i<=max;i++) if(i in rate){if(!first){hs=hs ",";ts=ts ",";fs=fs ","};hs=hs sprintf("%.3f",rate[i]);ts=ts temp[i];fs=fs fan[i];first=0}; print hs "]\t" ts "]\t" fs "]" }')"
   IFS=$'\t' read -r hs_json temp_json fan_json <<< "$parsed"
   [[ -n "${hs_json:-}" ]] || hs_json='[]'; [[ -n "${temp_json:-}" ]] || temp_json='[]'; [[ -n "${fan_json:-}" ]] || fan_json='[]'
-  uptime=0; pid="$(pgrep -f '/hive/miners/custom/gigahash-amd/gigahash-zk-rocm10.0' | head -n 1)"
+  uptime=0; pid="$(pgrep -f '/hive/miners/custom/gigahash-amd/gigahash-zk-amd' | head -n 1)"
   [[ -z "$pid" ]] || uptime="$(ps -o etimes= -p "$pid" 2>/dev/null | tr -d ' ')"
   [[ "$uptime" =~ ^[0-9]+$ ]] || uptime=0
-  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"2.2"}' "$hs_json" "$temp_json" "$fan_json" "$uptime")"
+  stats="$(printf '{"hs":%s,"hs_units":"khs","temp":%s,"fan":%s,"uptime":%s,"ver":"2.4"}' "$hs_json" "$temp_json" "$fan_json" "$uptime")"
 fi
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then echo "khs=$khs"; echo "$stats"; fi

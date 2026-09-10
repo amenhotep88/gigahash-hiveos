@@ -23,7 +23,7 @@ for doc in \
   require_text "$doc" 'W1ijDJZsLuKiLpKWzr5LYeVMnJKF8Khx9stXEBoXQfxwjEotbxppbN'
 done
 
-require_text docs/HANDOFF_CURRENT_2026-09-04_RU.md 'gigahash-amd-2.2.0.tar.gz'
+require_text docs/HANDOFF_CURRENT_2026-09-04_RU.md 'gigahash-amd-2.4.0.tar.gz'
 require_text docs/HANDOFF_CURRENT_2026-09-04_RU.md 'rz2-3080'
 require_text docs/HANDOFF_CURRENT_2026-09-04_RU.md 'rzserv-3080'
 require_text docs/HANDOFF_CURRENT_2026-09-04_RU.md 'x99-3070'
