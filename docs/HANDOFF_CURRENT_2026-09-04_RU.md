@@ -1,6 +1,6 @@
 # GigaHash / NOCK ZK — authoritative handoff
 
-Дата среза: **2026-09-04 UTC**.
+Дата среза: **2026-09-10 UTC**.
 
 Этот файл — главная точка продолжения проекта. Не начинать исследование заново. Подробные процедуры:
 
@@ -13,7 +13,7 @@
 
 Репозиторий `amenhotep88/gigahash-hiveos` содержит обвязки официальных закрытых GigaHash ZK binaries, а не исходники CUDA/ROCm proof-generator. Поддерживаются упаковка для HiveOS, конфиг, запуск, статистика, проверка SHA-256, CDN mirror parts, тесты и GitHub Release.
 
-Текущий NVIDIA-пакет: **GigaHash ZK v2.3 / CUDA 12.9 / `gigahash-2.3.0.tar.gz`**. Official binary SHA-256: `6234dbf687ee84aa1c9ef3bce798bb61fed961d4b8da6fe24777c901e27a2ae1`; package SHA-256: `f74c93a7007f0021d5850752ed995d702acfe7fbb29fb7723918d8c9216b0ded`.
+Текущий NVIDIA-пакет: **GigaHash ZK v2.4 / CUDA 12.9 / `gigahash-2.4.0.tar.gz`**. Official binary SHA-256: `372fb8fbe72c4a493016dc8d1fa6f54e2a16ae028bb32ca7f8fa02c62d6f660a`; package SHA-256: `8557335689e34ff69a96e38e1d9c6813639175603a25c5ff197770da8587424a`. Предыдущий NVIDIA v2.3 сохранён для rollback.
 
 Текущий AMD-пакет: **GigaHash ZK v2.2 / ROCm 10.0 / `gigahash-amd-2.2.0.tar.gz` / package version `2.2.0-amd2`**. Он использует отдельные `h-*-amd` scripts, HiveOS directory `/hive/miners/custom/gigahash-amd`, binary `gigahash-zk-rocm10.0`, test `tests/test_release_2_2_amd.sh` и workflow `.github/workflows/publish-v2.2-amd.yml`.
 

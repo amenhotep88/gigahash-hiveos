@@ -4,6 +4,15 @@
 
 Run one Supervisor-managed `gigahash-zk-12.9` process per container. Confirm `RUNNING`, one process only, actual GPU/PL/clocks/VRAM, stable hashrate and Accepted/Stale/Errors.
 
+Use NVIDIA v2.3 by default:
+
+- URL: `https://cdn.gigahash.cloud/releases/2.3/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
+- SHA-256: `6234dbf687ee84aa1c9ef3bce798bb61fed961d4b8da6fe24777c901e27a2ae1`
+
+Download to a temporary file, verify SHA-256 and `gigahash-zk 2.3`, then install. Do not add swap: Clore containers may prohibit `swapon`, and the user's working rigs do not require it. Do not run `apt-get` unless a required command is actually missing. Prefer one consistent visible download command; do not hide progress unless the user asks for quiet output.
+
+Before downloading, run `nvidia-smi -L`, query actual clocks/PL/VRAM, inspect CPU/RAM and confirm no existing compute process. If the GPU inventory or actual PL differs materially from the listing, stop for a keep/cancel decision before installing.
+
 ### Multi-GPU loss watchdog
 
 Supervisor does not restart `gigahash` when one CUDA worker stalls but the shared process remains alive. On a stable multi-GPU rental, install a second Supervisor program named `gigahash-watchdog`; cron may be absent in Clore containers.

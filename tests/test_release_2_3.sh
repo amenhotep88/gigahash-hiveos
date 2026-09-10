@@ -25,17 +25,11 @@ CUSTOM_DIR="$custom" CUSTOM_TEMPLATE='W1NOCK' WORKER_NAME='testrig' \
 . "$config"
 
 assert_eq "$GH_SERVER" 'backup.gigahash.cloud:9100' 'default server'
-assert_contains "$(cat "$REPO_DIR/h-manifest.conf")" 'CUSTOM_VERSION=2.3.0' 'manifest version'
-assert_contains "$(cat "$REPO_DIR/build.sh")" "VERSION='2.3.0'" 'package version'
-assert_contains "$(cat "$REPO_DIR/h-stats.sh")" '"2.3"' 'stats version'
-
-run_script="$(cat "$REPO_DIR/h-run.sh")"
-assert_contains "$run_script" 'gigahash-zk-2.3.tar.gz.part-' 'v2.3 mirror URL'
-assert_contains "$run_script" '6234dbf687ee84aa1c9ef3bce798bb61fed961d4b8da6fe24777c901e27a2ae1' 'v2.3 binary SHA256'
-
 workflow="$(cat "$REPO_DIR/.github/workflows/publish-v2.3.yml")"
 assert_contains "$workflow" 'releases/2.3/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9' 'official v2.3 URL'
 assert_contains "$workflow" "test \"\$(/tmp/gigahash-zk-12.9 --version)\" = 'gigahash-zk 2.3'" 'v2.3 version gate'
 assert_contains "$workflow" 'GH_PART_LAST: 57' 'mirror part count gate'
+[[ -f "$REPO_DIR/gigahash-2.3.0.tar.gz" ]] || fail 'v2.3 HiveOS package must remain available'
+[[ -f "$REPO_DIR/vendor/gigahash-zk-2.3.tar.gz.part-000" ]] || fail 'v2.3 mirror parts must remain available'
 
 echo 'PASS: GigaHash v2.3 release configuration'

@@ -1,12 +1,12 @@
-# GigaHash ZK v2.3 — HiveOS Custom Miner 2.3.0
+# GigaHash ZK v2.4 — HiveOS Custom Miner 2.4.0
 
 Unofficial HiveOS wrapper for the official `gigahash.cloud` NOCK ZK CUDA miner.
-The proprietary miner binary is **not bundled**. On first start, the wrapper reconstructs a mirror archive built from the official v2.3 binary and verifies both the archive and binary SHA-256 checksums.
+The proprietary miner binary is **not bundled**. On first start, the wrapper reconstructs a mirror archive built from the official v2.4 binary and verifies both the archive and binary SHA-256 checksums.
 
 ## Flight Sheet
 
 - Miner: **Custom**
-- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-2.3.0.tar.gz`
+- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-2.4.0.tar.gz`
 - Hash algorithm: leave blank / `----`
 - Wallet and worker template: **`%WAL%`**
 - Pool URL: `backup.gigahash.cloud:9100`
@@ -28,22 +28,24 @@ Miner output is mirrored to both the `miner` console and the log used by HiveOS 
 
 ## Official miner pinned by this package
 
-- GigaHash ZK: v2.3
+- GigaHash ZK: v2.4
 - CUDA build: 12.9
-- URL: `https://cdn.gigahash.cloud/releases/2.3/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
-- SHA256: `6234dbf687ee84aa1c9ef3bce798bb61fed961d4b8da6fe24777c901e27a2ae1`
-- HiveOS package SHA256: `f74c93a7007f0021d5850752ed995d702acfe7fbb29fb7723918d8c9216b0ded`
+- URL: `https://cdn.gigahash.cloud/releases/2.4/ubuntu20.04-cuda12.9.2/gigahash-zk-12.9`
+- SHA256: `372fb8fbe72c4a493016dc8d1fa6f54e2a16ae028bb32ca7f8fa02c62d6f660a`
+- HiveOS package SHA256: `8557335689e34ff69a96e38e1d9c6813639175603a25c5ff197770da8587424a`
 
-## Verified v2.3 interface
+## Verified v2.4 interface
 
 - accepts comma-separated primary and backup pool endpoints;
 - retains `--backup-server`, `--low-cpu`, `--devices`, and native JSON stats support;
-- reports `gigahash-zk 2.3` through `--version`.
+- reports `gigahash-zk 2.4` through `--version`.
 
-The v2.3 binary, command-line interface, and checksum were verified
+The v2.4 binary, command-line interface, and checksum were verified
 directly from the GigaHash CDN before this wrapper was built. Low-CPU mode and
 additional endpoint overrides are enabled only when explicitly supplied through
 Extra Config Arguments.
+
+The previous NVIDIA v2.3 package and its GitHub release remain available for rollback.
 
 ## AMD HiveOS package
 

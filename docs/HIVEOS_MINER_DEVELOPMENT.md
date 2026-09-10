@@ -14,9 +14,11 @@
 | `h-run.sh` | проверенная загрузка binary mirror, аргументы и запуск |
 | `h-stats.sh` | JSON/console stats → HiveOS JSON |
 | `build.sh` | воспроизводимый `gigahash-X.Y.Z.tar.gz` |
-| `tests/test_release_2_3.sh` | release invariants текущей версии |
-| `vendor/gigahash-zk-2.3.tar.gz.part-*` | jsDelivr mirror parts официального binary archive |
-| `.github/workflows/publish-v2.3.yml` | проверка, сборка и GitHub Release |
+| `tests/test_release_2_4.sh` | release invariants текущей версии |
+| `vendor/gigahash-zk-2.4.tar.gz.part-*` | jsDelivr mirror parts официального binary archive |
+| `.github/workflows/publish-v2.4.yml` | проверка, сборка и GitHub Release |
+
+Файлы v2.3 сохраняются как проверенный rollback-релиз.
 
 Отдельный AMD/ROCm пакет:
 
@@ -117,8 +119,8 @@ HiveOS использует generic hash units: `1 proof/s` отображает
 ```bash
 for test_file in tests/*.sh; do bash "$test_file"; done
 ./build.sh
-sha256sum gigahash-2.0.0.tar.gz
-tar -tzf gigahash-2.0.0.tar.gz
+sha256sum gigahash-2.4.0.tar.gz
+tar -tzf gigahash-2.4.0.tar.gz
 ```
 
 Для AMD дополнительно:
