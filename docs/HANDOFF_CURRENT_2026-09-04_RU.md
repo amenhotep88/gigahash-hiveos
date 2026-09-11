@@ -15,7 +15,7 @@
 
 Текущий NVIDIA-пакет: **GigaHash ZK v2.4 / CUDA 12.9 / `gigahash-2.4.0.tar.gz`**. Official binary SHA-256: `372fb8fbe72c4a493016dc8d1fa6f54e2a16ae028bb32ca7f8fa02c62d6f660a`; package SHA-256: `8557335689e34ff69a96e38e1d9c6813639175603a25c5ff197770da8587424a`. Предыдущий NVIDIA v2.3 сохранён для rollback.
 
-Текущий AMD-пакет: **GigaHash ZK v2.4 / `gigahash-amd-2.4.0.tar.gz` / package version `2.4.0-amd1`**. Official archive SHA-256: `9f34a1e4c341364de88b8324410e3d180fefb0f183dc38dba53b14e2469a822f`; binary SHA-256: `93d57c24b5223482cb461147baaf447797d72483aa22a37c33d292a2ea3c6802`; package SHA-256: `64c0a3afbd849984a5a04c4d49864f4438787d1d3fde6d8a87307d88eaf74b82`. Он использует отдельные `h-*-amd` scripts, HiveOS directory `/hive/miners/custom/gigahash-amd`, binary `gigahash-zk-amd`, test `tests/test_release_2_4_amd.sh` и workflow `.github/workflows/publish-v2.4-amd.yml`. AMD v2.2 сохранён для rollback.
+Текущий AMD-пакет: **GigaHash ZK v2.5 / `gigahash-amd-2.5.0.tar.gz` / package version `2.5.0-amd1`**. Official archive SHA-256: `529abd01baf0eaf73ea420fcb373739680c0d6a2a42210f959dab4676b43b4e5`; binary SHA-256: `1e10d5793aa70fdf6f52666e06e264f7079eb91bdb1f4073223777e54db1612b`; package SHA-256: `c6497a2f9a5200a4b064845faff6d3debe6a1428cbc02c876bcfa5d4493db90b`. Он использует отдельные `h-*-amd` scripts, HiveOS directory `/hive/miners/custom/gigahash-amd`, binary `gigahash-zk-amd`, test `tests/test_release_2_5_amd.sh` и workflow `.github/workflows/publish-v2.5-amd.yml`. AMD v2.4 и v2.2 сохранены для rollback.
 
 Split NOCK+PRL прекращён и не должен восстанавливаться автоматически.
 

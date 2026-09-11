@@ -50,20 +50,20 @@ The previous NVIDIA v2.3 package and its GitHub release remain available for rol
 ## AMD HiveOS package
 
 The repository also contains a separate AMD package for the official GigaHash
-ZK v2.4 AMD binary:
+ZK v2.5 AMD binary:
 
 - Custom miner name: `gigahash-amd`
-- Package: `gigahash-amd-2.4.0.tar.gz`
-- Package version: `2.4.0-amd1`
-- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-amd-2.4.0.tar.gz`
+- Package: `gigahash-amd-2.5.0.tar.gz`
+- Package version: `2.5.0-amd1`
+- Installation URL: `https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/gigahash-amd-2.5.0.tar.gz`
 - Supported family declared by the release: AMD RDNA2/RDNA3/RDNA4
-- Official archive: `https://cdn.gigahash.cloud/releases/2.4/hiveos/gigahash-zk-amd-2.4.tar.gz`
-- Official archive SHA-256: `9f34a1e4c341364de88b8324410e3d180fefb0f183dc38dba53b14e2469a822f`
+- Official archive: `https://cdn.gigahash.cloud/releases/2.5/hiveos/gigahash-zk-amd-2.5.tar.gz`
+- Official archive SHA-256: `529abd01baf0eaf73ea420fcb373739680c0d6a2a42210f959dab4676b43b4e5`
 - Official binary: `gigahash-zk-amd`
-- Official binary SHA-256: `93d57c24b5223482cb461147baaf447797d72483aa22a37c33d292a2ea3c6802`
-- Package SHA-256: `64c0a3afbd849984a5a04c4d49864f4438787d1d3fde6d8a87307d88eaf74b82`
+- Official binary SHA-256: `1e10d5793aa70fdf6f52666e06e264f7079eb91bdb1f4073223777e54db1612b`
+- Package SHA-256: `c6497a2f9a5200a4b064845faff6d3debe6a1428cbc02c876bcfa5d4493db90b`
 
-The previous AMD v2.2 package and release remain available for rollback.
+The previous AMD v2.4 and v2.2 packages and releases remain available for rollback.
 
 The NVIDIA and AMD packages use distinct HiveOS directories, manifests, logs,
 process names, mirror archives, tests, and release workflows. Do not mix their

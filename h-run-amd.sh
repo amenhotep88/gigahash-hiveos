@@ -6,10 +6,10 @@ CUSTOM_DIR="${CUSTOM_DIR:-/hive/miners/custom/gigahash-amd}"
 . "$CUSTOM_DIR/h-common.sh"
 
 BIN="$CUSTOM_DIR/gigahash-zk-amd"
-GH_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/gigahash-zk-amd-2.4.tar.gz.part-'
-GH_PART_LAST=136
-GH_ARCHIVE_SHA256='9f34a1e4c341364de88b8324410e3d180fefb0f183dc38dba53b14e2469a822f'
-EXPECTED_SHA256='93d57c24b5223482cb461147baaf447797d72483aa22a37c33d292a2ea3c6802'
+GH_PART_BASE='https://cdn.jsdelivr.net/gh/amenhotep88/gigahash-hiveos@main/vendor/gigahash-zk-amd-2.5.tar.gz.part-'
+GH_PART_LAST=142
+GH_ARCHIVE_SHA256='529abd01baf0eaf73ea420fcb373739680c0d6a2a42210f959dab4676b43b4e5'
+EXPECTED_SHA256='1e10d5793aa70fdf6f52666e06e264f7079eb91bdb1f4073223777e54db1612b'
 STATS_FILE="${CUSTOM_LOG_BASENAME}.json"
 
 mkdir -p "$(dirname "$CUSTOM_LOG_BASENAME")"
@@ -21,9 +21,9 @@ verify_binary() {
 
 download_binary() {
   local tmp_dir tmp_archive part part_index part_suffix candidate got
-  tmp_dir="$(mktemp -d "$CUSTOM_DIR/.gigahash-amd-2.4.XXXXXX")" || return 1
-  tmp_archive="$tmp_dir/gigahash-zk-amd-2.4.tar.gz"
-  echo "[gigahash-hiveos] Downloading verified GigaHash ZK v2.4 AMD mirror..."
+  tmp_dir="$(mktemp -d "$CUSTOM_DIR/.gigahash-amd-2.5.XXXXXX")" || return 1
+  tmp_archive="$tmp_dir/gigahash-zk-amd-2.5.tar.gz"
+  echo "[gigahash-hiveos] Downloading verified GigaHash ZK v2.5 AMD mirror..."
   for part_index in $(seq 0 "$GH_PART_LAST"); do
     printf -v part_suffix '%03d' "$part_index"
     part="$tmp_dir/part-$part_suffix"

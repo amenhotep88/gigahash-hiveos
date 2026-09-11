@@ -2,25 +2,11 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PACKAGE="$REPO_DIR/gigahash-amd-2.4.0.tar.gz"
-STAGE="$(mktemp -d)"
-trap 'rm -rf "$STAGE"' EXIT
-
 fail() { echo "FAIL: $*" >&2; exit 1; }
 
-"$REPO_DIR/build-amd.sh" >/dev/null
-[[ -s "$PACKAGE" ]] || fail 'AMD v2.4 HiveOS package was not built'
+[[ -f "$REPO_DIR/gigahash-amd-2.4.0.tar.gz" ]] || fail 'AMD v2.4 rollback package must remain available'
+[[ -f "$REPO_DIR/vendor/gigahash-zk-amd-2.4.tar.gz.part-000" ]] || fail 'AMD v2.4 mirror parts must remain available'
+[[ -f "$REPO_DIR/vendor/gigahash-zk-amd-2.4.tar.gz.part-136" ]] || fail 'AMD v2.4 mirror part range is incomplete'
+[[ -f "$REPO_DIR/.github/workflows/publish-v2.4-amd.yml" ]] || fail 'AMD v2.4 workflow must remain available'
 
-tar -xzf "$PACKAGE" -C "$STAGE"
-ROOT="$STAGE/gigahash-amd"
-
-[[ -x "$ROOT/h-config.sh" ]] || fail 'packaged AMD config script is not executable'
-[[ -x "$ROOT/h-run.sh" ]] || fail 'packaged AMD run script is not executable'
-[[ -x "$ROOT/h-stats.sh" ]] || fail 'packaged AMD stats script is not executable'
-grep -qx 'CUSTOM_VERSION=2.4.0-amd1' "$ROOT/h-manifest.conf" || fail 'wrong AMD package version'
-
-source "$ROOT/h-common.sh"
-[[ "$(normalize_payout 'wallet-address.amd-rig' 'amd-rig')" == 'wallet-address' ]] || \
-  fail 'wallet template suffix was not stripped'
-
-echo 'PASS: GigaHash v2.4 AMD HiveOS package behavior'
+echo 'PASS: GigaHash v2.4 AMD rollback assets'
